@@ -1,1 +1,1 @@
-{"root":["./src/app.tsx","./src/main.tsx","./src/components/exportpanel.tsx","./src/components/filepicker.tsx","./src/components/visualpreview.tsx","./src/components/waveformeditor.tsx","./src/state/useappstore.ts","./src/types/wavesurfer.d.ts"],"version":"5.9.3"}
+{"root":["./src/app.tsx","./src/main.tsx","./src/components/exportpanel.tsx","./src/components/filepicker.tsx","./src/components/visualpreview.tsx","./src/components/waveformeditor.tsx","./src/lib/tauriplatform.ts","./src/state/useappstore.ts","./src/types/wavesurfer.d.ts"],"version":"5.9.3"}
