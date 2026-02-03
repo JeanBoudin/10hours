@@ -26,6 +26,7 @@ interface AppState {
   statusMessage?: string;
   enableMp3: boolean;
   lastExportPath?: string;
+  exportDurationHours: number;
   exportDurationMinutes: number;
   setAudioFile: (file?: AudioFile) => void;
   setVisualFile: (file?: VisualFile) => void;
@@ -36,6 +37,7 @@ interface AppState {
   setOutputDir: (path: string) => void;
   setStatus: (status: ExportStatus, message?: string, exportedPath?: string) => void;
   toggleMp3: (enabled: boolean) => void;
+  setExportDurationHours: (hours: number) => void;
   setExportDurationMinutes: (minutes: number) => void;
 }
 
@@ -48,7 +50,8 @@ export const useAppStore = create<AppState>((set, get) => ({
   volume: 0.8,
   status: 'idle',
   enableMp3: false,
-  exportDurationMinutes: 60,
+  exportDurationHours: 1,
+  exportDurationMinutes: 0,
   setAudioFile: (file) =>
     set(() => ({
       audioFile: file,
@@ -74,5 +77,6 @@ export const useAppStore = create<AppState>((set, get) => ({
   setStatus: (status, message, exportedPath) =>
     set({ status, statusMessage: message, lastExportPath: exportedPath ?? get().lastExportPath }),
   toggleMp3: (enabled) => set({ enableMp3: enabled }),
+  setExportDurationHours: (hours) => set({ exportDurationHours: hours }),
   setExportDurationMinutes: (minutes) => set({ exportDurationMinutes: minutes })
 }));

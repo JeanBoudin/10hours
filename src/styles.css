@@ -215,6 +215,27 @@ button:hover:not(:disabled) {
   margin-top: 4px;
 }
 
+.duration-title {
+  font-size: 13px;
+  color: #475569;
+  margin-bottom: 6px;
+}
+
+.duration-row {
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+  margin-bottom: 12px;
+}
+
+.duration-field {
+  flex: 1;
+}
+
+.duration-field input[type='number'] {
+  width: 100%;
+}
+
 .export-buttons {
   display: flex;
   align-items: center;

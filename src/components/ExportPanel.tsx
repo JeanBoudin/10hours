@@ -19,7 +19,9 @@ const ExportPanel = () => {
     statusMessage,
     enableMp3,
     toggleMp3,
+    exportDurationHours,
     exportDurationMinutes,
+    setExportDurationHours,
     setExportDurationMinutes
   } = useAppStore((state) => ({
     audioFile: state.audioFile,
@@ -35,11 +37,20 @@ const ExportPanel = () => {
     statusMessage: state.statusMessage,
     enableMp3: state.enableMp3,
     toggleMp3: state.toggleMp3,
+    exportDurationHours: state.exportDurationHours,
     exportDurationMinutes: state.exportDurationMinutes,
+    setExportDurationHours: state.setExportDurationHours,
     setExportDurationMinutes: state.setExportDurationMinutes
   }));
 
   const [logs, setLogs] = useState<string[]>([]);
+  const totalMinutes = exportDurationHours * 60 + exportDurationMinutes;
+  const durationTag =
+    exportDurationHours > 0
+      ? exportDurationMinutes > 0
+        ? `${exportDurationHours}h${exportDurationMinutes}m`
+        : `${exportDurationHours}h`
+      : `${exportDurationMinutes}m`;
 
   const chooseDirectory = async () => {
     try {
@@ -128,12 +139,12 @@ const ExportPanel = () => {
       setStatus('error', 'Choisissez un dossier de sortie.');
       return;
     }
-    if (!exportDurationMinutes || exportDurationMinutes <= 0) {
+    if (!totalMinutes || totalMinutes <= 0) {
       setStatus('error', 'Durée vidéo invalide.');
       return;
     }
 
-    const durationSeconds = Math.max(1, Math.round(exportDurationMinutes * 60));
+    const durationSeconds = Math.max(1, Math.round(totalMinutes * 60));
     const segment = loopEnd - loopStart;
     const crossfadeSeconds = Math.min(segment / 2 - 0.01, crossfadeMs / 1000);
     if (crossfadeSeconds <= 0) {
@@ -151,7 +162,7 @@ const ExportPanel = () => {
       `[aLoopBase]aresample=${sampleRate},aloop=loop=-1:size=${loopSamples}[aout]`;
 
     const baseName = (await basename(audioFile.path)).replace(/\.[^/.]+$/, '');
-    const videoName = `${baseName}_loop_${exportDurationMinutes}m.mp4`;
+    const videoName = `${baseName}_loop_${durationTag}.mp4`;
     const targetPath = await join(outputDir, videoName);
 
     const visualArgs =
@@ -188,7 +199,7 @@ const ExportPanel = () => {
     ];
 
     try {
-      setStatus('exporting', `Export MP4 (${exportDurationMinutes} min) en cours...`);
+      setStatus('exporting', `Export MP4 (${durationTag}) en cours...`);
       appendLog(`ffmpeg ${args.join(' ')}`);
       const command = Command.sidecar('ffmpeg', args, { cwd: outputDir });
       const { code, stdout, stderr } = await command.execute();
@@ -216,17 +227,38 @@ const ExportPanel = () => {
         <button type="button" onClick={chooseDirectory} className="secondary">Choisir dossier de sortie</button>
         <div className="file-label">{outputDir ?? 'Non défini'}</div>
       </div>
-      <label>
-        Durée export vidéo (minutes)
-        <input
-          type="number"
-          min={1}
-          max={600}
-          step={1}
-          value={exportDurationMinutes}
-          onChange={(event) => setExportDurationMinutes(Number(event.target.value))}
-        />
-      </label>
+      <div className="duration-title">Durée export vidéo</div>
+      <div className="duration-row">
+        <label className="duration-field">
+          Heures
+          <input
+            type="number"
+            min={0}
+            max={999}
+            step={1}
+            value={exportDurationHours}
+            onChange={(event) => {
+              const value = Number(event.target.value);
+              setExportDurationHours(Number.isFinite(value) ? Math.max(0, value) : 0);
+            }}
+          />
+        </label>
+        <label className="duration-field">
+          Minutes
+          <input
+            type="number"
+            min={0}
+            max={59}
+            step={1}
+            value={exportDurationMinutes}
+            onChange={(event) => {
+              const value = Number(event.target.value);
+              const safeValue = Number.isFinite(value) ? Math.max(0, Math.min(59, value)) : 0;
+              setExportDurationMinutes(safeValue);
+            }}
+          />
+        </label>
+      </div>
       <div className="export-buttons">
         <button type="button" onClick={() => runExport('wav')} disabled={status === 'exporting'} className="primary">Exporter WAV</button>
         <label className="checkbox">
@@ -236,7 +268,7 @@ const ExportPanel = () => {
       </div>
       {visualFile && (
         <button type="button" className="primary" disabled={status === 'exporting'} onClick={runExportMp4}>
-          Exporter MP4 ({exportDurationMinutes} min)
+          Exporter MP4 ({durationTag})
         </button>
       )}
       <div className={`status-banner ${status}`}>
