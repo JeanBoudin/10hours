@@ -1,5 +1,5 @@
 import { open } from '@tauri-apps/plugin-dialog';
-import { basename } from '@tauri-apps/api/path';
+import { convertFileSrc } from '@tauri-apps/api/core';
 import { useAppStore } from '../state/useAppStore';
 
 const AUDIO_EXTENSIONS = ['mp3', 'wav', 'm4a', 'ogg', 'flac'];
@@ -7,13 +7,44 @@ const IMAGE_EXTENSIONS = ['png', 'jpg', 'jpeg', 'webp', 'gif'];
 const VIDEO_EXTENSIONS = ['mp4', 'mov', 'webm'];
 
 const FilePicker = () => {
-  const { setAudioFile, setVisualFile, audioFile, visualFile, setStatus } = useAppStore((state) => ({
+  const { setAudioFile, setVisualFile, audioFile, visualFile, setStatus, setAudioDuration, setLoopBounds } = useAppStore((state) => ({
     setAudioFile: state.setAudioFile,
     setVisualFile: state.setVisualFile,
     audioFile: state.audioFile,
     visualFile: state.visualFile,
-    setStatus: state.setStatus
+    setStatus: state.setStatus,
+    setAudioDuration: state.setAudioDuration,
+    setLoopBounds: state.setLoopBounds
   }));
+
+  const getFileName = (fullPath: string) => {
+    const parts = fullPath.split(/[/\\\\]/);
+    return parts[parts.length - 1] || fullPath;
+  };
+
+  const preloadAudioDuration = (path: string) => {
+    try {
+      const audio = new Audio();
+      audio.preload = 'metadata';
+      audio.src = convertFileSrc(path);
+      const cleanup = () => {
+        audio.removeEventListener('loadedmetadata', onLoaded);
+        audio.removeEventListener('error', onError);
+      };
+      const onLoaded = () => {
+        if (Number.isFinite(audio.duration) && audio.duration > 0) {
+          setAudioDuration(audio.duration);
+          setLoopBounds(0, audio.duration);
+        }
+        cleanup();
+      };
+      const onError = () => cleanup();
+      audio.addEventListener('loadedmetadata', onLoaded);
+      audio.addEventListener('error', onError);
+    } catch {
+      // Ignore metadata preload failures; WaveSurfer will handle duration when possible.
+    }
+  };
 
   const handlePickAudio = async () => {
     try {
@@ -22,9 +53,11 @@ const FilePicker = () => {
         filters: [{ name: 'Audio', extensions: AUDIO_EXTENSIONS }]
       });
 
-      if (typeof selected === 'string') {
-        const name = await basename(selected);
-        setAudioFile({ path: selected, name });
+      const selectedPath = Array.isArray(selected) ? selected[0] : selected;
+      if (typeof selectedPath === 'string') {
+        const name = getFileName(selectedPath);
+        setAudioFile({ path: selectedPath, name });
+        preloadAudioDuration(selectedPath);
         setStatus('idle', 'Audio sélectionné.');
       }
     } catch (error) {
@@ -43,15 +76,16 @@ const FilePicker = () => {
         ]
       });
 
-      if (typeof selected === 'string') {
-        const extension = selected.split('.').pop()?.toLowerCase() ?? '';
-        const name = await basename(selected);
+      const selectedPath = Array.isArray(selected) ? selected[0] : selected;
+      if (typeof selectedPath === 'string') {
+        const extension = selectedPath.split('.').pop()?.toLowerCase() ?? '';
+        const name = getFileName(selectedPath);
         if (IMAGE_EXTENSIONS.includes(extension)) {
           const kind = extension === 'gif' ? 'gif' : 'image';
-          setVisualFile({ path: selected, name, kind });
+          setVisualFile({ path: selectedPath, name, kind });
           setStatus('idle', extension === 'gif' ? 'GIF chargé.' : 'Image chargée.');
         } else if (VIDEO_EXTENSIONS.includes(extension)) {
-          setVisualFile({ path: selected, name, kind: 'video' });
+          setVisualFile({ path: selectedPath, name, kind: 'video' });
           setStatus('idle', 'Vidéo chargée.');
         } else {
           setStatus('error', 'Extension visuelle non supportée.');

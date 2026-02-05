@@ -6,6 +6,7 @@ webviews = ["main"]
 remote = { urls = ["http://localhost:1420/*"] }
 permissions = [
   "core:default",
+  "core:path:allow-basename",
   "dialog:default",
   "dialog:allow-open",
   "dialog:allow-save",

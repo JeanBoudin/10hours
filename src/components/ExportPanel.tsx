@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { open } from '@tauri-apps/plugin-dialog';
 import { Command } from '@tauri-apps/plugin-shell';
-import { basename, join } from '@tauri-apps/api/path';
+import { join } from '@tauri-apps/api/path';
 import { useAppStore } from '../state/useAppStore';
 
 const ExportPanel = () => {
@@ -111,12 +111,12 @@ const ExportPanel = () => {
     }
   };
 
-  const validateLoop = () => {
-    if (!audioFile) {
+  const validateLoopWith = (audio: typeof audioFile, start: number, end: number) => {
+    if (!audio) {
       setStatus('error', 'Sélectionnez un audio.');
       return false;
     }
-    const segment = loopEnd - loopStart;
+    const segment = end - start;
     if (segment <= 0) {
       setStatus('error', 'Loop invalide. Ajustez les bornes.');
       return false;
@@ -125,8 +125,18 @@ const ExportPanel = () => {
   };
 
   const runExport = async (format: 'wav' | 'mp3') => {
-    if (!validateLoop() || !audioFile) return;
-    if (!outputDir) {
+    const state = useAppStore.getState();
+    const currentAudio = audioFile ?? state.audioFile;
+    const currentLoopStart = state.loopStart ?? loopStart;
+    const currentLoopEnd = state.loopEnd ?? loopEnd;
+    const currentCrossfadeMs = state.crossfadeMs ?? crossfadeMs;
+    const currentOutputDir = state.outputDir ?? outputDir;
+    if (!currentAudio) {
+      setStatus('error', 'Sélectionnez un audio.');
+      return;
+    }
+    if (!validateLoopWith(currentAudio, currentLoopStart, currentLoopEnd)) return;
+    if (!currentOutputDir) {
       setStatus('error', 'Choisissez un dossier de sortie.');
       return;
     }
@@ -134,21 +144,21 @@ const ExportPanel = () => {
 
     setStatus('exporting', `Export ${format.toUpperCase()} en cours...`);
 
-    const segment = loopEnd - loopStart;
-    const crossfadeSeconds = Math.min(segment / 2 - 0.01, crossfadeMs / 1000);
+    const segment = currentLoopEnd - currentLoopStart;
+    const crossfadeSeconds = Math.min(segment / 2 - 0.01, currentCrossfadeMs / 1000);
     if (crossfadeSeconds <= 0) {
       setStatus('error', 'Le crossfade doit être plus court que la boucle.');
       return;
     }
 
-    const filter = `[0:a]atrim=start=${loopStart}:end=${loopEnd},asetpts=PTS-STARTPTS,asplit=2[a0][a1];` +
+    const filter = `[0:a]atrim=start=${currentLoopStart}:end=${currentLoopEnd},asetpts=PTS-STARTPTS,asplit=2[a0][a1];` +
       `[a0]afade=t=out:st=${(segment - crossfadeSeconds).toFixed(3)}:d=${crossfadeSeconds.toFixed(3)}[a0f];` +
       `[a1]atrim=start=${(segment - crossfadeSeconds).toFixed(3)},asetpts=PTS-STARTPTS,afade=t=in:st=0:d=${crossfadeSeconds.toFixed(3)}[a1f];` +
       `[a0f][a1f]acrossfade=d=${crossfadeSeconds.toFixed(3)}:c1=tri:c2=tri[aout]`;
 
-    const baseName = (await basename(audioFile.path)).replace(/\.[^/.]+$/, '');
+    const baseName = currentAudio.name.replace(/\.[^/.]+$/, '');
     const targetName = `${baseName}_loop.${format}`;
-    const targetPath = await join(outputDir, targetName);
+    const targetPath = await join(currentOutputDir, targetName);
 
     const args = [
       '-y',
@@ -159,7 +169,7 @@ const ExportPanel = () => {
       'pipe:1',
       '-nostats',
       '-i',
-      audioFile.path,
+      currentAudio.path,
       '-filter_complex',
       filter,
       '-map',
@@ -188,11 +198,19 @@ const ExportPanel = () => {
   };
 
   const runExportMp4 = async () => {
-    if (!validateLoop() || !audioFile || !visualFile) {
+    const state = useAppStore.getState();
+    const currentAudio = audioFile ?? state.audioFile;
+    const currentVisual = visualFile ?? state.visualFile;
+    const currentLoopStart = state.loopStart ?? loopStart;
+    const currentLoopEnd = state.loopEnd ?? loopEnd;
+    const currentCrossfadeMs = state.crossfadeMs ?? crossfadeMs;
+    const currentOutputDir = state.outputDir ?? outputDir;
+    if (!currentAudio || !currentVisual) {
       setStatus('error', 'Audio et visuel nécessaires pour exporter en MP4.');
       return;
     }
-    if (!outputDir) {
+    if (!validateLoopWith(currentAudio, currentLoopStart, currentLoopEnd)) return;
+    if (!currentOutputDir) {
       setStatus('error', 'Choisissez un dossier de sortie.');
       return;
     }
@@ -203,8 +221,8 @@ const ExportPanel = () => {
     setProgress(0);
 
     const durationSeconds = Math.max(1, Math.round(totalMinutes * 60));
-    const segment = loopEnd - loopStart;
-    const crossfadeSeconds = Math.min(segment / 2 - 0.01, crossfadeMs / 1000);
+    const segment = currentLoopEnd - currentLoopStart;
+    const crossfadeSeconds = Math.min(segment / 2 - 0.01, currentCrossfadeMs / 1000);
     if (crossfadeSeconds <= 0) {
       setStatus('error', 'Le crossfade doit être plus court que la boucle.');
       return;
@@ -213,20 +231,20 @@ const ExportPanel = () => {
     const sampleRate = 44100;
     const loopSamples = Math.max(1, Math.round(segment * sampleRate));
     const audioFilter =
-      `[0:a]atrim=start=${loopStart}:end=${loopEnd},asetpts=PTS-STARTPTS,asplit=2[a0][a1];` +
+      `[0:a]atrim=start=${currentLoopStart}:end=${currentLoopEnd},asetpts=PTS-STARTPTS,asplit=2[a0][a1];` +
       `[a0]afade=t=out:st=${(segment - crossfadeSeconds).toFixed(3)}:d=${crossfadeSeconds.toFixed(3)}[a0f];` +
       `[a1]atrim=start=${(segment - crossfadeSeconds).toFixed(3)},asetpts=PTS-STARTPTS,afade=t=in:st=0:d=${crossfadeSeconds.toFixed(3)}[a1f];` +
       `[a0f][a1f]acrossfade=d=${crossfadeSeconds.toFixed(3)}:c1=tri:c2=tri[aLoopBase];` +
       `[aLoopBase]aresample=${sampleRate},aloop=loop=-1:size=${loopSamples}[aout]`;
 
-    const baseName = (await basename(audioFile.path)).replace(/\.[^/.]+$/, '');
+    const baseName = currentAudio.name.replace(/\.[^/.]+$/, '');
     const videoName = `${baseName}_loop_${durationTag}.mp4`;
-    const targetPath = await join(outputDir, videoName);
+    const targetPath = await join(currentOutputDir, videoName);
 
     const visualArgs =
-      visualFile.kind === 'image'
-        ? ['-loop', '1', '-framerate', '30', '-i', visualFile.path]
-        : ['-stream_loop', '-1', '-i', visualFile.path];
+      currentVisual.kind === 'image'
+        ? ['-loop', '1', '-framerate', '30', '-i', currentVisual.path]
+        : ['-stream_loop', '-1', '-i', currentVisual.path];
 
     const args = [
       '-y',
@@ -237,7 +255,7 @@ const ExportPanel = () => {
       'pipe:1',
       '-nostats',
       '-i',
-      audioFile.path,
+      currentAudio.path,
       ...visualArgs,
       '-filter_complex',
       audioFilter,
