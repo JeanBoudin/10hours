@@ -3,7 +3,7 @@ import { basename } from '@tauri-apps/api/path';
 import { useAppStore } from '../state/useAppStore';
 
 const AUDIO_EXTENSIONS = ['mp3', 'wav', 'm4a', 'ogg', 'flac'];
-const IMAGE_EXTENSIONS = ['png', 'jpg', 'jpeg', 'webp'];
+const IMAGE_EXTENSIONS = ['png', 'jpg', 'jpeg', 'webp', 'gif'];
 const VIDEO_EXTENSIONS = ['mp4', 'mov', 'webm'];
 
 const FilePicker = () => {
@@ -47,8 +47,9 @@ const FilePicker = () => {
         const extension = selected.split('.').pop()?.toLowerCase() ?? '';
         const name = await basename(selected);
         if (IMAGE_EXTENSIONS.includes(extension)) {
-          setVisualFile({ path: selected, name, kind: 'image' });
-          setStatus('idle', 'Image chargée.');
+          const kind = extension === 'gif' ? 'gif' : 'image';
+          setVisualFile({ path: selected, name, kind });
+          setStatus('idle', extension === 'gif' ? 'GIF chargé.' : 'Image chargée.');
         } else if (VIDEO_EXTENSIONS.includes(extension)) {
           setVisualFile({ path: selected, name, kind: 'video' });
           setStatus('idle', 'Vidéo chargée.');
@@ -70,7 +71,7 @@ const FilePicker = () => {
         <div className="file-label">{audioFile ? audioFile.name : 'Aucun audio'}</div>
       </div>
       <div className="picker-row">
-        <button type="button" onClick={handlePickVisual} className="secondary">Choisir une image ou vidéo</button>
+        <button type="button" onClick={handlePickVisual} className="secondary">Choisir une image, un GIF ou une vidéo</button>
         <div className="file-label">{visualFile ? visualFile.name : 'Aucun visuel'}</div>
       </div>
       <p className="hint">Formats supportés audio: {AUDIO_EXTENSIONS.join(', ')} | visuel: {IMAGE_EXTENSIONS.join(', ')} / {VIDEO_EXTENSIONS.join(', ')}</p>

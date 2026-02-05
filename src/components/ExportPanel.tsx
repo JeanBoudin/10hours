@@ -241,6 +241,8 @@ const ExportPanel = () => {
       ...visualArgs,
       '-filter_complex',
       audioFilter,
+      '-vf',
+      'scale=trunc(iw/2)*2:trunc(ih/2)*2',
       '-map',
       '1:v:0',
       '-map',

@@ -14,7 +14,7 @@ const VisualPreview = ({ visual }: Props) => {
 
   return (
     <div className="visual-wrapper">
-      {visual.kind === 'image' ? (
+      {visual.kind === 'image' || visual.kind === 'gif' ? (
         <img src={source} alt={visual.name} className="visual-media" />
       ) : (
         <video src={source} className="visual-media" muted loop autoPlay playsInline controls={false} />

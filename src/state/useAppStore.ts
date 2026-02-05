@@ -9,7 +9,7 @@ export type AudioFile = {
 export type VisualFile = {
   path: string;
   name: string;
-  kind: 'image' | 'video';
+  kind: 'image' | 'video' | 'gif';
 };
 
 type ExportStatus = 'idle' | 'exporting' | 'success' | 'error';
