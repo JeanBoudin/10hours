@@ -44,6 +44,7 @@ const ExportPanel = () => {
   }));
 
   const [logs, setLogs] = useState<string[]>([]);
+  const [progress, setProgress] = useState<number | null>(null);
   const totalMinutes = exportDurationHours * 60 + exportDurationMinutes;
   const durationTag =
     exportDurationHours > 0
@@ -66,6 +67,49 @@ const ExportPanel = () => {
   };
 
   const appendLog = (line: string) => setLogs((prev) => [line, ...prev].slice(0, 50));
+  const updateProgressFromLine = (line: string, durationSeconds: number) => {
+    if (!line || durationSeconds <= 0) return;
+    if (line.startsWith('out_time_ms=')) {
+      const value = Number(line.replace('out_time_ms=', ''));
+      if (Number.isFinite(value)) {
+        const ratio = Math.min(1, Math.max(0, value / (durationSeconds * 1_000_000)));
+        setProgress(ratio);
+      }
+    } else if (line.startsWith('progress=end')) {
+      setProgress(1);
+    }
+  };
+
+  const runFfmpegWithProgress = async (args: string[], durationSeconds: number) => {
+    if (!outputDir) {
+      setStatus('error', 'Choisissez un dossier de sortie.');
+      return { code: 1, stdout: '', stderr: 'No output directory' };
+    }
+    setProgress(0);
+    let buffer = '';
+    const command = Command.sidecar('ffmpeg', args, { cwd: outputDir });
+    command.stdout.on('data', (chunk) => {
+      buffer += chunk;
+      const lines = buffer.split(/\r?\n/);
+      buffer = lines.pop() ?? '';
+      lines.forEach((line) => updateProgressFromLine(line, durationSeconds));
+    });
+    command.stderr.on('data', (line) => {
+      if (line) appendLog(line);
+    });
+    try {
+      await command.spawn();
+      const result = await new Promise<{ code: number | null; signal: number | null }>((resolve, reject) => {
+        command.on('close', resolve);
+        command.on('error', reject);
+      });
+      if (result.code === 0) setProgress(1);
+      return { code: result.code ?? 1, stdout: '', stderr: '' };
+    } catch (error) {
+      appendLog(String(error));
+      return { code: 1, stdout: '', stderr: String(error) };
+    }
+  };
 
   const validateLoop = () => {
     if (!audioFile) {
@@ -86,6 +130,7 @@ const ExportPanel = () => {
       setStatus('error', 'Choisissez un dossier de sortie.');
       return;
     }
+    setProgress(0);
 
     setStatus('exporting', `Export ${format.toUpperCase()} en cours...`);
 
@@ -105,7 +150,21 @@ const ExportPanel = () => {
     const targetName = `${baseName}_loop.${format}`;
     const targetPath = await join(outputDir, targetName);
 
-    const args = ['-y', '-i', audioFile.path, '-filter_complex', filter, '-map', '[aout]'];
+    const args = [
+      '-y',
+      '-hide_banner',
+      '-loglevel',
+      'error',
+      '-progress',
+      'pipe:1',
+      '-nostats',
+      '-i',
+      audioFile.path,
+      '-filter_complex',
+      filter,
+      '-map',
+      '[aout]'
+    ];
     if (format === 'wav') {
       args.push('-c:a', 'pcm_s24le');
     } else {
@@ -115,13 +174,11 @@ const ExportPanel = () => {
 
     try {
       appendLog(`ffmpeg ${args.join(' ')}`);
-      const command = Command.sidecar('ffmpeg', args, { cwd: outputDir });
-      const { code, stdout, stderr } = await command.execute();
-      appendLog(stdout);
+      const { code, stderr } = await runFfmpegWithProgress(args, segment);
       if (code === 0) {
         setStatus('success', `${format.toUpperCase()} exporté: ${targetName}`, targetPath);
       } else {
-        appendLog(stderr);
+        if (stderr) appendLog(stderr);
         setStatus('error', `FFmpeg a retourné le code ${code}`);
       }
     } catch (error) {
@@ -143,6 +200,7 @@ const ExportPanel = () => {
       setStatus('error', 'Durée vidéo invalide.');
       return;
     }
+    setProgress(0);
 
     const durationSeconds = Math.max(1, Math.round(totalMinutes * 60));
     const segment = loopEnd - loopStart;
@@ -172,6 +230,12 @@ const ExportPanel = () => {
 
     const args = [
       '-y',
+      '-hide_banner',
+      '-loglevel',
+      'error',
+      '-progress',
+      'pipe:1',
+      '-nostats',
       '-i',
       audioFile.path,
       ...visualArgs,
@@ -201,13 +265,11 @@ const ExportPanel = () => {
     try {
       setStatus('exporting', `Export MP4 (${durationTag}) en cours...`);
       appendLog(`ffmpeg ${args.join(' ')}`);
-      const command = Command.sidecar('ffmpeg', args, { cwd: outputDir });
-      const { code, stdout, stderr } = await command.execute();
-      appendLog(stdout);
+      const { code, stderr } = await runFfmpegWithProgress(args, durationSeconds);
       if (code === 0) {
         setStatus('success', `MP4 exporté: ${videoName}`, targetPath);
       } else {
-        appendLog(stderr);
+        if (stderr) appendLog(stderr);
         setStatus('error', `FFmpeg MP4 a échoué (code ${code}).`);
       }
     } catch (error) {
@@ -274,6 +336,14 @@ const ExportPanel = () => {
       <div className={`status-banner ${status}`}>
         {statusMessage ?? 'Prêt'}
       </div>
+      {status === 'exporting' && progress !== null && (
+        <div className="progress-row">
+          <div className="progress-bar">
+            <div className="progress-fill" style={{ width: `${Math.round(progress * 100)}%` }} />
+          </div>
+          <div className="progress-label">{Math.round(progress * 100)}%</div>
+        </div>
+      )}
       <details>
         <summary>Logs FFmpeg</summary>
         <pre className="logs">{logs.join('\n')}</pre>

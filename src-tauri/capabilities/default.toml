@@ -14,7 +14,7 @@ permissions = [
   "dialog:allow-confirm",
   "shell:default",
   "shell:allow-open",
-  "shell:allow-spawn",
+  { identifier = "shell:allow-spawn", allow = [ { name = "ffmpeg", sidecar = true, args = true } ] },
   "shell:allow-kill",
   "shell:allow-stdin-write",
   { identifier = "shell:allow-execute", allow = [ { name = "ffmpeg", sidecar = true, args = true } ] }
