@@ -45,6 +45,7 @@ const ExportPanel = () => {
 
   const [logs, setLogs] = useState<string[]>([]);
   const [progress, setProgress] = useState<number | null>(null);
+  const [remainingSeconds, setRemainingSeconds] = useState<number | null>(null);
   const totalMinutes = exportDurationHours * 60 + exportDurationMinutes;
   const durationTag =
     exportDurationHours > 0
@@ -67,16 +68,30 @@ const ExportPanel = () => {
   };
 
   const appendLog = (line: string) => setLogs((prev) => [line, ...prev].slice(0, 50));
+  const formatDuration = (seconds: number) => {
+    const total = Math.max(0, Math.floor(seconds));
+    const hours = Math.floor(total / 3600);
+    const minutes = Math.floor((total % 3600) / 60);
+    const secs = total % 60;
+    if (hours > 0) {
+      return `${hours}:${String(minutes).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+    }
+    return `${minutes}:${String(secs).padStart(2, '0')}`;
+  };
+
   const updateProgressFromLine = (line: string, durationSeconds: number) => {
     if (!line || durationSeconds <= 0) return;
     if (line.startsWith('out_time_ms=')) {
       const value = Number(line.replace('out_time_ms=', ''));
       if (Number.isFinite(value)) {
-        const ratio = Math.min(1, Math.max(0, value / (durationSeconds * 1_000_000)));
+        const currentSeconds = value / 1_000_000;
+        const ratio = Math.min(1, Math.max(0, currentSeconds / durationSeconds));
         setProgress(ratio);
+        setRemainingSeconds(Math.max(0, durationSeconds - currentSeconds));
       }
     } else if (line.startsWith('progress=end')) {
       setProgress(1);
+      setRemainingSeconds(0);
     }
   };
 
@@ -86,6 +101,7 @@ const ExportPanel = () => {
       return { code: 1, stdout: '', stderr: 'No output directory' };
     }
     setProgress(0);
+    setRemainingSeconds(durationSeconds);
     let buffer = '';
     const command = Command.sidecar('ffmpeg', args, { cwd: outputDir });
     command.stdout.on('data', (chunk) => {
@@ -141,6 +157,7 @@ const ExportPanel = () => {
       return;
     }
     setProgress(0);
+    setRemainingSeconds(durationSeconds);
 
     setStatus('exporting', `Export ${format.toUpperCase()} en cours...`);
 
@@ -361,7 +378,12 @@ const ExportPanel = () => {
           <div className="progress-bar">
             <div className="progress-fill" style={{ width: `${Math.round(progress * 100)}%` }} />
           </div>
-          <div className="progress-label">{Math.round(progress * 100)}%</div>
+          <div className="progress-meta">
+            <div className="progress-label">{Math.round(progress * 100)}%</div>
+            {remainingSeconds !== null && (
+              <div className="progress-remaining">Restant: {formatDuration(remainingSeconds)}</div>
+            )}
+          </div>
         </div>
       )}
       <details>

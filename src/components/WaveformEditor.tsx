@@ -12,7 +12,8 @@ const WaveformEditor = () => {
     setLoopBounds,
     setAudioDuration,
     volume,
-    setVolume
+    setVolume,
+    setStatus
   } = useAppStore((state) => ({
     audioFile: state.audioFile,
     loopStart: state.loopStart,
@@ -20,7 +21,8 @@ const WaveformEditor = () => {
     setLoopBounds: state.setLoopBounds,
     setAudioDuration: state.setAudioDuration,
     volume: state.volume,
-    setVolume: state.setVolume
+    setVolume: state.setVolume,
+    setStatus: state.setStatus
   }));
 
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -114,6 +116,81 @@ const WaveformEditor = () => {
     }
   };
 
+  const handleAutoLoop = useCallback(() => {
+    const waveSurfer = waveSurferRef.current;
+    const decoded = waveSurfer?.getDecodedData();
+    if (!decoded) {
+      setStatus('error', 'Audio pas encore prêt pour l’analyse.');
+      return;
+    }
+
+    const channel = decoded.getChannelData(0);
+    const sampleRate = decoded.sampleRate;
+    const windowSize = 2048;
+    const hop = 1024;
+    const rms: number[] = [];
+    for (let i = 0; i + windowSize <= channel.length; i += hop) {
+      let sum = 0;
+      for (let j = 0; j < windowSize; j += 1) {
+        const v = channel[i + j];
+        sum += v * v;
+      }
+      rms.push(Math.sqrt(sum / windowSize));
+    }
+
+    const maxRms = Math.max(...rms);
+    if (!Number.isFinite(maxRms) || maxRms <= 0) {
+      setLoopBounds(0, decoded.duration);
+      setStatus('idle', 'Auto loop: silence détecté, boucle complète appliquée.');
+      return;
+    }
+
+    const threshold = maxRms * 0.08;
+    const segments: Array<{ start: number; end: number; score: number }> = [];
+    let currentStart = -1;
+    let energySum = 0;
+    for (let i = 0; i < rms.length; i += 1) {
+      const value = rms[i];
+      if (value >= threshold) {
+        if (currentStart < 0) currentStart = i;
+        energySum += value;
+      } else if (currentStart >= 0) {
+        const length = i - currentStart;
+        const score = length * (energySum / Math.max(length, 1));
+        segments.push({ start: currentStart, end: i - 1, score });
+        currentStart = -1;
+        energySum = 0;
+      }
+    }
+    if (currentStart >= 0) {
+      const length = rms.length - currentStart;
+      const score = length * (energySum / Math.max(length, 1));
+      segments.push({ start: currentStart, end: rms.length - 1, score });
+    }
+
+    if (segments.length === 0) {
+      setLoopBounds(0, decoded.duration);
+      setStatus('idle', 'Auto loop: aucune zone détectée, boucle complète appliquée.');
+      return;
+    }
+
+    const best = segments.reduce((prev, next) => (next.score > prev.score ? next : prev));
+    const paddingSeconds = 0.03;
+    let startSec = (best.start * hop) / sampleRate;
+    let endSec = ((best.end * hop) + windowSize) / sampleRate;
+    if (endSec - startSec > paddingSeconds * 2) {
+      startSec += paddingSeconds;
+      endSec -= paddingSeconds;
+    }
+    if (endSec - startSec < 0.25) {
+      startSec = 0;
+      endSec = decoded.duration;
+    }
+
+    setLoopBounds(startSec, endSec);
+    setStatus('idle', `Auto loop: ${startSec.toFixed(2)}s → ${endSec.toFixed(2)}s`);
+  }, [setLoopBounds, setStatus]);
+
   if (!hasAudio) {
     return <div className="waveform-placeholder">Sélectionnez un fichier audio pour afficher le waveform.</div>;
   }
@@ -132,6 +209,7 @@ const WaveformEditor = () => {
           <input type="number" step="0.01" value={loopEnd} onChange={(event) => handleLoopInput(event, 'end')} />
         </label>
         <span>Durée: {loopDuration}s</span>
+        <button type="button" onClick={handleAutoLoop} className="secondary">Auto loop</button>
       </div>
       <div className="transport">
         <button type="button" onClick={playLoop} className="primary">Play loop</button>
