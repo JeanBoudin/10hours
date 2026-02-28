@@ -1,0 +1,648 @@
+0 verbose cli /opt/homebrew/Cellar/node/23.6.0/bin/node /opt/homebrew/bin/npm
+1 info using npm@10.9.2
+2 info using node@v23.6.0
+3 silly config load:file:/opt/homebrew/lib/node_modules/npm/npmrc
+4 silly config load:file:/Users/admin/Project/10hours/.npmrc
+5 silly config load:file:/Users/admin/.npmrc
+6 silly config load:file:/opt/homebrew/etc/npmrc
+7 verbose title npm install
+8 verbose argv "install" "--cache" "./.npm-cache" "--prefer-offline" "false" "--no-audit" "--progress" "false"
+9 verbose logfile logs-max:10 dir:/Users/admin/Project/10hours/.npm-cache/_logs/2026-02-28T10_15_07_792Z-
+10 verbose logfile /Users/admin/Project/10hours/.npm-cache/_logs/2026-02-28T10_15_07_792Z-debug-0.log
+11 silly logfile done cleaning log files
+12 silly packumentCache heap:4345298944 maxSize:1086324736 maxEntrySize:543162368
+13 http fetch GET https://registry.npmjs.org/npm attempt 1 failed with ENOTFOUND
+14 silly idealTree buildDeps
+15 silly reify mark retired [
+15 silly reify   '/Users/admin/Project/10hours/node_modules/baseline-browser-mapping'
+15 silly reify ]
+16 silly reify mark retired [ '/Users/admin/Project/10hours/node_modules/caniuse-lite' ]
+17 silly reify mark retired [ '/Users/admin/Project/10hours/node_modules/esbuild' ]
+18 silly reify mark retired [ '/Users/admin/Project/10hours/node_modules/loose-envify' ]
+19 silly reify mark retired [ '/Users/admin/Project/10hours/node_modules/react' ]
+20 silly reify mark retired [ '/Users/admin/Project/10hours/node_modules/react-dom' ]
+21 silly reify mark retired [ '/Users/admin/Project/10hours/node_modules/react-refresh' ]
+22 silly reify mark retired [ '/Users/admin/Project/10hours/node_modules/scheduler' ]
+23 silly reify mark retired [ '/Users/admin/Project/10hours/node_modules/undici-types' ]
+24 silly reify mark retired [ '/Users/admin/Project/10hours/node_modules/vite' ]
+25 silly reify mark retired [ '/Users/admin/Project/10hours/node_modules/wavesurfer.js' ]
+26 silly reify mark retired [ '/Users/admin/Project/10hours/node_modules/zustand' ]
+27 silly reify mark retired [ '/Users/admin/Project/10hours/node_modules/@babel/generator' ]
+28 silly reify mark retired [
+28 silly reify   '/Users/admin/Project/10hours/node_modules/@babel/plugin-transform-react-jsx-self'
+28 silly reify ]
+29 silly reify mark retired [
+29 silly reify   '/Users/admin/Project/10hours/node_modules/@babel/plugin-transform-react-jsx-source'
+29 silly reify ]
+30 silly reify mark retired [ '/Users/admin/Project/10hours/node_modules/@esbuild/aix-ppc64' ]
+31 silly reify mark retired [ '/Users/admin/Project/10hours/node_modules/@esbuild/android-arm' ]
+32 silly reify mark retired [ '/Users/admin/Project/10hours/node_modules/@esbuild/android-arm64' ]
+33 silly reify mark retired [ '/Users/admin/Project/10hours/node_modules/@esbuild/darwin-arm64' ]
+34 silly reify mark retired [ '/Users/admin/Project/10hours/node_modules/@esbuild/android-x64' ]
+35 silly reify mark retired [ '/Users/admin/Project/10hours/node_modules/@esbuild/darwin-x64' ]
+36 silly reify mark retired [ '/Users/admin/Project/10hours/node_modules/@esbuild/freebsd-arm64' ]
+37 silly reify mark retired [ '/Users/admin/Project/10hours/node_modules/@esbuild/freebsd-x64' ]
+38 silly reify mark retired [ '/Users/admin/Project/10hours/node_modules/@esbuild/linux-arm' ]
+39 silly reify mark retired [ '/Users/admin/Project/10hours/node_modules/@esbuild/linux-ia32' ]
+40 silly reify mark retired [ '/Users/admin/Project/10hours/node_modules/@esbuild/linux-arm64' ]
+41 silly reify mark retired [ '/Users/admin/Project/10hours/node_modules/@esbuild/linux-ppc64' ]
+42 silly reify mark retired [ '/Users/admin/Project/10hours/node_modules/@esbuild/linux-riscv64' ]
+43 silly reify mark retired [ '/Users/admin/Project/10hours/node_modules/@esbuild/linux-loong64' ]
+44 silly reify mark retired [ '/Users/admin/Project/10hours/node_modules/@esbuild/linux-mips64el' ]
+45 silly reify mark retired [ '/Users/admin/Project/10hours/node_modules/@esbuild/linux-s390x' ]
+46 silly reify mark retired [ '/Users/admin/Project/10hours/node_modules/@esbuild/linux-x64' ]
+47 silly reify mark retired [ '/Users/admin/Project/10hours/node_modules/@esbuild/netbsd-x64' ]
+48 silly reify mark retired [ '/Users/admin/Project/10hours/node_modules/@esbuild/sunos-x64' ]
+49 silly reify mark retired [ '/Users/admin/Project/10hours/node_modules/@esbuild/openbsd-x64' ]
+50 silly reify mark retired [ '/Users/admin/Project/10hours/node_modules/@esbuild/win32-arm64' ]
+51 silly reify mark retired [ '/Users/admin/Project/10hours/node_modules/@esbuild/win32-ia32' ]
+52 silly reify mark retired [ '/Users/admin/Project/10hours/node_modules/@esbuild/win32-x64' ]
+53 silly reify mark retired [ '/Users/admin/Project/10hours/node_modules/@rolldown/pluginutils' ]
+54 silly reify mark retired [
+54 silly reify   '/Users/admin/Project/10hours/node_modules/@rollup/rollup-android-arm-eabi'
+54 silly reify ]
+55 silly reify mark retired [
+55 silly reify   '/Users/admin/Project/10hours/node_modules/@rollup/rollup-android-arm64'
+55 silly reify ]
+56 silly reify mark retired [
+56 silly reify   '/Users/admin/Project/10hours/node_modules/@rollup/rollup-darwin-x64'
+56 silly reify ]
+57 silly reify mark retired [
+57 silly reify   '/Users/admin/Project/10hours/node_modules/@rollup/rollup-freebsd-arm64'
+57 silly reify ]
+58 silly reify mark retired [
+58 silly reify   '/Users/admin/Project/10hours/node_modules/@rollup/rollup-freebsd-x64'
+58 silly reify ]
+59 silly reify mark retired [
+59 silly reify   '/Users/admin/Project/10hours/node_modules/@rollup/rollup-linux-arm-gnueabihf'
+59 silly reify ]
+60 silly reify mark retired [
+60 silly reify   '/Users/admin/Project/10hours/node_modules/@rollup/rollup-linux-arm-musleabihf'
+60 silly reify ]
+61 silly reify mark retired [
+61 silly reify   '/Users/admin/Project/10hours/node_modules/@rollup/rollup-linux-arm64-gnu'
+61 silly reify ]
+62 silly reify mark retired [
+62 silly reify   '/Users/admin/Project/10hours/node_modules/@rollup/rollup-linux-loong64-gnu'
+62 silly reify ]
+63 silly reify mark retired [
+63 silly reify   '/Users/admin/Project/10hours/node_modules/@rollup/rollup-linux-arm64-musl'
+63 silly reify ]
+64 silly reify mark retired [
+64 silly reify   '/Users/admin/Project/10hours/node_modules/@rollup/rollup-linux-loong64-musl'
+64 silly reify ]
+65 silly reify mark retired [
+65 silly reify   '/Users/admin/Project/10hours/node_modules/@rollup/rollup-linux-ppc64-gnu'
+65 silly reify ]
+66 silly reify mark retired [
+66 silly reify   '/Users/admin/Project/10hours/node_modules/@rollup/rollup-linux-ppc64-musl'
+66 silly reify ]
+67 silly reify mark retired [
+67 silly reify   '/Users/admin/Project/10hours/node_modules/@rollup/rollup-linux-riscv64-musl'
+67 silly reify ]
+68 silly reify mark retired [
+68 silly reify   '/Users/admin/Project/10hours/node_modules/@rollup/rollup-linux-riscv64-gnu'
+68 silly reify ]
+69 silly reify mark retired [
+69 silly reify   '/Users/admin/Project/10hours/node_modules/@rollup/rollup-linux-s390x-gnu'
+69 silly reify ]
+70 silly reify mark retired [
+70 silly reify   '/Users/admin/Project/10hours/node_modules/@rollup/rollup-linux-x64-gnu'
+70 silly reify ]
+71 silly reify mark retired [
+71 silly reify   '/Users/admin/Project/10hours/node_modules/@rollup/rollup-linux-x64-musl'
+71 silly reify ]
+72 silly reify mark retired [
+72 silly reify   '/Users/admin/Project/10hours/node_modules/@rollup/rollup-openbsd-x64'
+72 silly reify ]
+73 silly reify mark retired [
+73 silly reify   '/Users/admin/Project/10hours/node_modules/@rollup/rollup-openharmony-arm64'
+73 silly reify ]
+74 silly reify mark retired [
+74 silly reify   '/Users/admin/Project/10hours/node_modules/@rollup/rollup-win32-arm64-msvc'
+74 silly reify ]
+75 silly reify mark retired [
+75 silly reify   '/Users/admin/Project/10hours/node_modules/@rollup/rollup-win32-ia32-msvc'
+75 silly reify ]
+76 silly reify mark retired [
+76 silly reify   '/Users/admin/Project/10hours/node_modules/@rollup/rollup-win32-x64-gnu'
+76 silly reify ]
+77 silly reify mark retired [ '/Users/admin/Project/10hours/node_modules/@tauri-apps/cli' ]
+78 silly reify mark retired [
+78 silly reify   '/Users/admin/Project/10hours/node_modules/@rollup/rollup-win32-x64-msvc'
+78 silly reify ]
+79 silly reify mark retired [ '/Users/admin/Project/10hours/node_modules/@tauri-apps/api' ]
+80 silly reify mark retired [
+80 silly reify   '/Users/admin/Project/10hours/node_modules/@tauri-apps/cli-darwin-arm64'
+80 silly reify ]
+81 silly reify mark retired [
+81 silly reify   '/Users/admin/Project/10hours/node_modules/@tauri-apps/cli-linux-arm-gnueabihf'
+81 silly reify ]
+82 silly reify mark retired [
+82 silly reify   '/Users/admin/Project/10hours/node_modules/@tauri-apps/cli-darwin-x64'
+82 silly reify ]
+83 silly reify mark retired [
+83 silly reify   '/Users/admin/Project/10hours/node_modules/@tauri-apps/cli-linux-arm64-gnu'
+83 silly reify ]
+84 silly reify mark retired [
+84 silly reify   '/Users/admin/Project/10hours/node_modules/@tauri-apps/cli-linux-riscv64-gnu'
+84 silly reify ]
+85 silly reify mark retired [
+85 silly reify   '/Users/admin/Project/10hours/node_modules/@tauri-apps/cli-linux-arm64-musl'
+85 silly reify ]
+86 silly reify mark retired [
+86 silly reify   '/Users/admin/Project/10hours/node_modules/@tauri-apps/cli-win32-arm64-msvc'
+86 silly reify ]
+87 silly reify mark retired [
+87 silly reify   '/Users/admin/Project/10hours/node_modules/@tauri-apps/cli-linux-x64-gnu'
+87 silly reify ]
+88 silly reify mark retired [
+88 silly reify   '/Users/admin/Project/10hours/node_modules/@tauri-apps/cli-linux-x64-musl'
+88 silly reify ]
+89 silly reify mark retired [
+89 silly reify   '/Users/admin/Project/10hours/node_modules/@tauri-apps/cli-win32-ia32-msvc'
+89 silly reify ]
+90 silly reify mark retired [
+90 silly reify   '/Users/admin/Project/10hours/node_modules/@tauri-apps/cli-win32-x64-msvc'
+90 silly reify ]
+91 silly reify mark retired [
+91 silly reify   '/Users/admin/Project/10hours/node_modules/@tauri-apps/plugin-shell'
+91 silly reify ]
+92 silly reify mark retired [
+92 silly reify   '/Users/admin/Project/10hours/node_modules/@tauri-apps/plugin-dialog'
+92 silly reify ]
+93 silly reify mark retired [ '/Users/admin/Project/10hours/node_modules/@types/babel__generator' ]
+94 silly reify mark retired [ '/Users/admin/Project/10hours/node_modules/@types/babel__traverse' ]
+95 silly reify mark retired [ '/Users/admin/Project/10hours/node_modules/@types/babel__template' ]
+96 silly reify mark retired [ '/Users/admin/Project/10hours/node_modules/@types/babel__core' ]
+97 silly reify mark retired [ '/Users/admin/Project/10hours/node_modules/@types/node' ]
+98 silly reify mark retired [ '/Users/admin/Project/10hours/node_modules/@types/prop-types' ]
+99 silly reify mark retired [ '/Users/admin/Project/10hours/node_modules/@types/react' ]
+100 silly reify mark retired [ '/Users/admin/Project/10hours/node_modules/@types/react-dom' ]
+101 silly reify mark retired [ '/Users/admin/Project/10hours/node_modules/@vitejs/plugin-react' ]
+102 silly reify mark retired [
+102 silly reify   '/Users/admin/Project/10hours/node_modules/browserslist',
+102 silly reify   '/Users/admin/Project/10hours/node_modules/.bin/browserslist'
+102 silly reify ]
+103 silly reify mark retired [
+103 silly reify   '/Users/admin/Project/10hours/node_modules/jsesc',
+103 silly reify   '/Users/admin/Project/10hours/node_modules/.bin/jsesc'
+103 silly reify ]
+104 silly reify mark retired [
+104 silly reify   '/Users/admin/Project/10hours/node_modules/json5',
+104 silly reify   '/Users/admin/Project/10hours/node_modules/.bin/json5'
+104 silly reify ]
+105 silly reify mark retired [
+105 silly reify   '/Users/admin/Project/10hours/node_modules/nanoid',
+105 silly reify   '/Users/admin/Project/10hours/node_modules/.bin/nanoid'
+105 silly reify ]
+106 silly reify mark retired [
+106 silly reify   '/Users/admin/Project/10hours/node_modules/rollup',
+106 silly reify   '/Users/admin/Project/10hours/node_modules/.bin/rollup'
+106 silly reify ]
+107 silly reify mark retired [
+107 silly reify   '/Users/admin/Project/10hours/node_modules/semver',
+107 silly reify   '/Users/admin/Project/10hours/node_modules/.bin/semver'
+107 silly reify ]
+108 silly reify mark retired [
+108 silly reify   '/Users/admin/Project/10hours/node_modules/update-browserslist-db',
+108 silly reify   '/Users/admin/Project/10hours/node_modules/.bin/update-browserslist-db'
+108 silly reify ]
+109 silly reify mark retired [
+109 silly reify   '/Users/admin/Project/10hours/node_modules/typescript',
+109 silly reify   '/Users/admin/Project/10hours/node_modules/.bin/tsc',
+109 silly reify   '/Users/admin/Project/10hours/node_modules/.bin/tsserver'
+109 silly reify ]
+110 silly reify mark retired [
+110 silly reify   '/Users/admin/Project/10hours/node_modules/@babel/parser',
+110 silly reify   '/Users/admin/Project/10hours/node_modules/.bin/parser'
+110 silly reify ]
+111 silly reify moves {
+111 silly reify   '/Users/admin/Project/10hours/node_modules/baseline-browser-mapping': '/Users/admin/Project/10hours/node_modules/.baseline-browser-mapping-ITMWDzhc',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/caniuse-lite': '/Users/admin/Project/10hours/node_modules/.caniuse-lite-hxreQfAQ',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/esbuild': '/Users/admin/Project/10hours/node_modules/.esbuild-J4BrKcG3',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/loose-envify': '/Users/admin/Project/10hours/node_modules/.loose-envify-tRdQIzMI',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/react': '/Users/admin/Project/10hours/node_modules/.react-np7JcsnB',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/react-dom': '/Users/admin/Project/10hours/node_modules/.react-dom-ia781oc9',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/react-refresh': '/Users/admin/Project/10hours/node_modules/.react-refresh-ZU8ciWVH',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/scheduler': '/Users/admin/Project/10hours/node_modules/.scheduler-QEieLkoB',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/undici-types': '/Users/admin/Project/10hours/node_modules/.undici-types-IFH7rFNv',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/vite': '/Users/admin/Project/10hours/node_modules/.vite-K5OhhD3u',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/wavesurfer.js': '/Users/admin/Project/10hours/node_modules/.wavesurfer.js-VP5hdfDq',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/zustand': '/Users/admin/Project/10hours/node_modules/.zustand-tcV7jGlu',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/@babel/generator': '/Users/admin/Project/10hours/node_modules/@babel/.generator-awOvliOE',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/@babel/plugin-transform-react-jsx-self': '/Users/admin/Project/10hours/node_modules/@babel/.plugin-transform-react-jsx-self-tHqX8Lsz',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/@babel/plugin-transform-react-jsx-source': '/Users/admin/Project/10hours/node_modules/@babel/.plugin-transform-react-jsx-source-RfcAgdJd',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/@esbuild/aix-ppc64': '/Users/admin/Project/10hours/node_modules/@esbuild/.aix-ppc64-SHILcWst',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/@esbuild/android-arm': '/Users/admin/Project/10hours/node_modules/@esbuild/.android-arm-CtfxkLeS',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/@esbuild/android-arm64': '/Users/admin/Project/10hours/node_modules/@esbuild/.android-arm64-IYAdYhl2',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/@esbuild/darwin-arm64': '/Users/admin/Project/10hours/node_modules/@esbuild/.darwin-arm64-gaXBWJ8O',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/@esbuild/android-x64': '/Users/admin/Project/10hours/node_modules/@esbuild/.android-x64-mrUvAtr4',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/@esbuild/darwin-x64': '/Users/admin/Project/10hours/node_modules/@esbuild/.darwin-x64-s3XkkUU5',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/@esbuild/freebsd-arm64': '/Users/admin/Project/10hours/node_modules/@esbuild/.freebsd-arm64-SEBB5e6m',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/@esbuild/freebsd-x64': '/Users/admin/Project/10hours/node_modules/@esbuild/.freebsd-x64-BNCp0643',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/@esbuild/linux-arm': '/Users/admin/Project/10hours/node_modules/@esbuild/.linux-arm-Mokmh34W',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/@esbuild/linux-ia32': '/Users/admin/Project/10hours/node_modules/@esbuild/.linux-ia32-E9nw37Yx',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/@esbuild/linux-arm64': '/Users/admin/Project/10hours/node_modules/@esbuild/.linux-arm64-ceLfKnKE',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/@esbuild/linux-ppc64': '/Users/admin/Project/10hours/node_modules/@esbuild/.linux-ppc64-EkUzUARz',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/@esbuild/linux-riscv64': '/Users/admin/Project/10hours/node_modules/@esbuild/.linux-riscv64-CfyWMrW2',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/@esbuild/linux-loong64': '/Users/admin/Project/10hours/node_modules/@esbuild/.linux-loong64-NzI2nUPA',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/@esbuild/linux-mips64el': '/Users/admin/Project/10hours/node_modules/@esbuild/.linux-mips64el-u0H4Z1Ia',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/@esbuild/linux-s390x': '/Users/admin/Project/10hours/node_modules/@esbuild/.linux-s390x-B1ZGIYA2',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/@esbuild/linux-x64': '/Users/admin/Project/10hours/node_modules/@esbuild/.linux-x64-TrhJzgHa',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/@esbuild/netbsd-x64': '/Users/admin/Project/10hours/node_modules/@esbuild/.netbsd-x64-gW4e7JeT',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/@esbuild/sunos-x64': '/Users/admin/Project/10hours/node_modules/@esbuild/.sunos-x64-ygoBPnBQ',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/@esbuild/openbsd-x64': '/Users/admin/Project/10hours/node_modules/@esbuild/.openbsd-x64-QkNFkFdF',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/@esbuild/win32-arm64': '/Users/admin/Project/10hours/node_modules/@esbuild/.win32-arm64-6SNlhu9A',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/@esbuild/win32-ia32': '/Users/admin/Project/10hours/node_modules/@esbuild/.win32-ia32-RwQH58MJ',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/@esbuild/win32-x64': '/Users/admin/Project/10hours/node_modules/@esbuild/.win32-x64-U6AhcZgb',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/@rolldown/pluginutils': '/Users/admin/Project/10hours/node_modules/@rolldown/.pluginutils-S3UPreq5',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/@rollup/rollup-android-arm-eabi': '/Users/admin/Project/10hours/node_modules/@rollup/.rollup-android-arm-eabi-VSp1FlB8',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/@rollup/rollup-android-arm64': '/Users/admin/Project/10hours/node_modules/@rollup/.rollup-android-arm64-8eBCHq7D',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/@rollup/rollup-darwin-x64': '/Users/admin/Project/10hours/node_modules/@rollup/.rollup-darwin-x64-FHNxBZK1',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/@rollup/rollup-freebsd-arm64': '/Users/admin/Project/10hours/node_modules/@rollup/.rollup-freebsd-arm64-VGHmv81x',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/@rollup/rollup-freebsd-x64': '/Users/admin/Project/10hours/node_modules/@rollup/.rollup-freebsd-x64-dO2X20Yc',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/@rollup/rollup-linux-arm-gnueabihf': '/Users/admin/Project/10hours/node_modules/@rollup/.rollup-linux-arm-gnueabihf-d7ywU5qh',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/@rollup/rollup-linux-arm-musleabihf': '/Users/admin/Project/10hours/node_modules/@rollup/.rollup-linux-arm-musleabihf-8F0wUihg',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/@rollup/rollup-linux-arm64-gnu': '/Users/admin/Project/10hours/node_modules/@rollup/.rollup-linux-arm64-gnu-ySOXGy9p',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/@rollup/rollup-linux-loong64-gnu': '/Users/admin/Project/10hours/node_modules/@rollup/.rollup-linux-loong64-gnu-AaQBvPqW',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/@rollup/rollup-linux-arm64-musl': '/Users/admin/Project/10hours/node_modules/@rollup/.rollup-linux-arm64-musl-mF36FfbY',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/@rollup/rollup-linux-loong64-musl': '/Users/admin/Project/10hours/node_modules/@rollup/.rollup-linux-loong64-musl-6GpUs2s7',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/@rollup/rollup-linux-ppc64-gnu': '/Users/admin/Project/10hours/node_modules/@rollup/.rollup-linux-ppc64-gnu-Lzhlxta7',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/@rollup/rollup-linux-ppc64-musl': '/Users/admin/Project/10hours/node_modules/@rollup/.rollup-linux-ppc64-musl-E6F1Bl2z',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/@rollup/rollup-linux-riscv64-musl': '/Users/admin/Project/10hours/node_modules/@rollup/.rollup-linux-riscv64-musl-wdHhDM4z',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/@rollup/rollup-linux-riscv64-gnu': '/Users/admin/Project/10hours/node_modules/@rollup/.rollup-linux-riscv64-gnu-uNDPCaf4',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/@rollup/rollup-linux-s390x-gnu': '/Users/admin/Project/10hours/node_modules/@rollup/.rollup-linux-s390x-gnu-3SD7Dd8Z',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/@rollup/rollup-linux-x64-gnu': '/Users/admin/Project/10hours/node_modules/@rollup/.rollup-linux-x64-gnu-RGAb3SDx',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/@rollup/rollup-linux-x64-musl': '/Users/admin/Project/10hours/node_modules/@rollup/.rollup-linux-x64-musl-ZV2k4EMm',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/@rollup/rollup-openbsd-x64': '/Users/admin/Project/10hours/node_modules/@rollup/.rollup-openbsd-x64-LKIhmA1F',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/@rollup/rollup-openharmony-arm64': '/Users/admin/Project/10hours/node_modules/@rollup/.rollup-openharmony-arm64-Pe2Eslv7',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/@rollup/rollup-win32-arm64-msvc': '/Users/admin/Project/10hours/node_modules/@rollup/.rollup-win32-arm64-msvc-7j3kUc7i',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/@rollup/rollup-win32-ia32-msvc': '/Users/admin/Project/10hours/node_modules/@rollup/.rollup-win32-ia32-msvc-WpckYXuH',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/@rollup/rollup-win32-x64-gnu': '/Users/admin/Project/10hours/node_modules/@rollup/.rollup-win32-x64-gnu-ytv2TtBP',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/@tauri-apps/cli': '/Users/admin/Project/10hours/node_modules/@tauri-apps/.cli-hQyk6Y2A',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/@rollup/rollup-win32-x64-msvc': '/Users/admin/Project/10hours/node_modules/@rollup/.rollup-win32-x64-msvc-77RTT2Bi',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/@tauri-apps/api': '/Users/admin/Project/10hours/node_modules/@tauri-apps/.api-1kV9J0T5',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/@tauri-apps/cli-darwin-arm64': '/Users/admin/Project/10hours/node_modules/@tauri-apps/.cli-darwin-arm64-eJ7vCXTv',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/@tauri-apps/cli-linux-arm-gnueabihf': '/Users/admin/Project/10hours/node_modules/@tauri-apps/.cli-linux-arm-gnueabihf-GxFvF4x3',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/@tauri-apps/cli-darwin-x64': '/Users/admin/Project/10hours/node_modules/@tauri-apps/.cli-darwin-x64-I4kIz2ug',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/@tauri-apps/cli-linux-arm64-gnu': '/Users/admin/Project/10hours/node_modules/@tauri-apps/.cli-linux-arm64-gnu-3Lbco6sH',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/@tauri-apps/cli-linux-riscv64-gnu': '/Users/admin/Project/10hours/node_modules/@tauri-apps/.cli-linux-riscv64-gnu-gTdLrnO0',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/@tauri-apps/cli-linux-arm64-musl': '/Users/admin/Project/10hours/node_modules/@tauri-apps/.cli-linux-arm64-musl-2CdwL6LW',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/@tauri-apps/cli-win32-arm64-msvc': '/Users/admin/Project/10hours/node_modules/@tauri-apps/.cli-win32-arm64-msvc-Cc4aiIgG',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/@tauri-apps/cli-linux-x64-gnu': '/Users/admin/Project/10hours/node_modules/@tauri-apps/.cli-linux-x64-gnu-NFNOHPmx',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/@tauri-apps/cli-linux-x64-musl': '/Users/admin/Project/10hours/node_modules/@tauri-apps/.cli-linux-x64-musl-d8xdPySx',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/@tauri-apps/cli-win32-ia32-msvc': '/Users/admin/Project/10hours/node_modules/@tauri-apps/.cli-win32-ia32-msvc-I9Hp53Ed',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/@tauri-apps/cli-win32-x64-msvc': '/Users/admin/Project/10hours/node_modules/@tauri-apps/.cli-win32-x64-msvc-9hXzmEys',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/@tauri-apps/plugin-shell': '/Users/admin/Project/10hours/node_modules/@tauri-apps/.plugin-shell-Aj9Q32AD',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/@tauri-apps/plugin-dialog': '/Users/admin/Project/10hours/node_modules/@tauri-apps/.plugin-dialog-YjHdF8Br',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/@types/babel__generator': '/Users/admin/Project/10hours/node_modules/@types/.babel__generator-Mo1QSzdy',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/@types/babel__traverse': '/Users/admin/Project/10hours/node_modules/@types/.babel__traverse-FmbOE5sM',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/@types/babel__template': '/Users/admin/Project/10hours/node_modules/@types/.babel__template-C5TWHXN0',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/@types/babel__core': '/Users/admin/Project/10hours/node_modules/@types/.babel__core-XvRHFxNe',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/@types/node': '/Users/admin/Project/10hours/node_modules/@types/.node-zTo1jAu3',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/@types/prop-types': '/Users/admin/Project/10hours/node_modules/@types/.prop-types-msSDlLOJ',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/@types/react': '/Users/admin/Project/10hours/node_modules/@types/.react-CmbTVZvE',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/@types/react-dom': '/Users/admin/Project/10hours/node_modules/@types/.react-dom-GxPn997i',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/@vitejs/plugin-react': '/Users/admin/Project/10hours/node_modules/@vitejs/.plugin-react-bkajZGV5',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/browserslist': '/Users/admin/Project/10hours/node_modules/.browserslist-mSSocBsw',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/.bin/browserslist': '/Users/admin/Project/10hours/node_modules/.bin/.browserslist-RLVH8t2S',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/jsesc': '/Users/admin/Project/10hours/node_modules/.jsesc-HTBqJrYN',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/.bin/jsesc': '/Users/admin/Project/10hours/node_modules/.bin/.jsesc-39mNPVUm',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/json5': '/Users/admin/Project/10hours/node_modules/.json5-chQT6AcU',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/.bin/json5': '/Users/admin/Project/10hours/node_modules/.bin/.json5-ICsh1HJk',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/nanoid': '/Users/admin/Project/10hours/node_modules/.nanoid-ut97shyW',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/.bin/nanoid': '/Users/admin/Project/10hours/node_modules/.bin/.nanoid-VdMKzUz3',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/rollup': '/Users/admin/Project/10hours/node_modules/.rollup-kFvm9Juo',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/.bin/rollup': '/Users/admin/Project/10hours/node_modules/.bin/.rollup-yW8eR6C1',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/semver': '/Users/admin/Project/10hours/node_modules/.semver-owCd8w5v',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/.bin/semver': '/Users/admin/Project/10hours/node_modules/.bin/.semver-naTQo2cF',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/update-browserslist-db': '/Users/admin/Project/10hours/node_modules/.update-browserslist-db-eRMlkDnF',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/.bin/update-browserslist-db': '/Users/admin/Project/10hours/node_modules/.bin/.update-browserslist-db-vTLXpKaN',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/typescript': '/Users/admin/Project/10hours/node_modules/.typescript-k8ZNWar4',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/.bin/tsc': '/Users/admin/Project/10hours/node_modules/.bin/.tsc-yv2uE3d1',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/.bin/tsserver': '/Users/admin/Project/10hours/node_modules/.bin/.tsserver-2272S2qA',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/@babel/parser': '/Users/admin/Project/10hours/node_modules/@babel/.parser-uPPPitfo',
+111 silly reify   '/Users/admin/Project/10hours/node_modules/.bin/parser': '/Users/admin/Project/10hours/node_modules/.bin/.parser-aamTipg0'
+111 silly reify }
+112 verbose reify failed optional dependency /Users/admin/Project/10hours/node_modules/@tauri-apps/cli-win32-x64-msvc
+113 silly reify mark deleted [
+113 silly reify   '/Users/admin/Project/10hours/node_modules/@tauri-apps/cli-win32-x64-msvc'
+113 silly reify ]
+114 verbose reify failed optional dependency /Users/admin/Project/10hours/node_modules/@tauri-apps/cli-win32-ia32-msvc
+115 silly reify mark deleted [
+115 silly reify   '/Users/admin/Project/10hours/node_modules/@tauri-apps/cli-win32-ia32-msvc'
+115 silly reify ]
+116 verbose reify failed optional dependency /Users/admin/Project/10hours/node_modules/@tauri-apps/cli-linux-x64-musl
+117 silly reify mark deleted [
+117 silly reify   '/Users/admin/Project/10hours/node_modules/@tauri-apps/cli-linux-x64-musl'
+117 silly reify ]
+118 verbose reify failed optional dependency /Users/admin/Project/10hours/node_modules/@tauri-apps/cli-linux-x64-gnu
+119 silly reify mark deleted [
+119 silly reify   '/Users/admin/Project/10hours/node_modules/@tauri-apps/cli-linux-x64-gnu'
+119 silly reify ]
+120 verbose reify failed optional dependency /Users/admin/Project/10hours/node_modules/@tauri-apps/cli-win32-arm64-msvc
+121 silly reify mark deleted [
+121 silly reify   '/Users/admin/Project/10hours/node_modules/@tauri-apps/cli-win32-arm64-msvc'
+121 silly reify ]
+122 verbose reify failed optional dependency /Users/admin/Project/10hours/node_modules/@tauri-apps/cli-linux-arm64-musl
+123 silly reify mark deleted [
+123 silly reify   '/Users/admin/Project/10hours/node_modules/@tauri-apps/cli-linux-arm64-musl'
+123 silly reify ]
+124 verbose reify failed optional dependency /Users/admin/Project/10hours/node_modules/@tauri-apps/cli-linux-riscv64-gnu
+125 silly reify mark deleted [
+125 silly reify   '/Users/admin/Project/10hours/node_modules/@tauri-apps/cli-linux-riscv64-gnu'
+125 silly reify ]
+126 verbose reify failed optional dependency /Users/admin/Project/10hours/node_modules/@tauri-apps/cli-linux-arm64-gnu
+127 silly reify mark deleted [
+127 silly reify   '/Users/admin/Project/10hours/node_modules/@tauri-apps/cli-linux-arm64-gnu'
+127 silly reify ]
+128 verbose reify failed optional dependency /Users/admin/Project/10hours/node_modules/@tauri-apps/cli-darwin-x64
+129 silly reify mark deleted [
+129 silly reify   '/Users/admin/Project/10hours/node_modules/@tauri-apps/cli-darwin-x64'
+129 silly reify ]
+130 verbose reify failed optional dependency /Users/admin/Project/10hours/node_modules/@tauri-apps/cli-linux-arm-gnueabihf
+131 silly reify mark deleted [
+131 silly reify   '/Users/admin/Project/10hours/node_modules/@tauri-apps/cli-linux-arm-gnueabihf'
+131 silly reify ]
+132 verbose reify failed optional dependency /Users/admin/Project/10hours/node_modules/@rollup/rollup-win32-x64-msvc
+133 silly reify mark deleted [
+133 silly reify   '/Users/admin/Project/10hours/node_modules/@rollup/rollup-win32-x64-msvc'
+133 silly reify ]
+134 verbose reify failed optional dependency /Users/admin/Project/10hours/node_modules/@rollup/rollup-win32-x64-gnu
+135 silly reify mark deleted [
+135 silly reify   '/Users/admin/Project/10hours/node_modules/@rollup/rollup-win32-x64-gnu'
+135 silly reify ]
+136 verbose reify failed optional dependency /Users/admin/Project/10hours/node_modules/@rollup/rollup-win32-ia32-msvc
+137 silly reify mark deleted [
+137 silly reify   '/Users/admin/Project/10hours/node_modules/@rollup/rollup-win32-ia32-msvc'
+137 silly reify ]
+138 verbose reify failed optional dependency /Users/admin/Project/10hours/node_modules/@rollup/rollup-win32-arm64-msvc
+139 silly reify mark deleted [
+139 silly reify   '/Users/admin/Project/10hours/node_modules/@rollup/rollup-win32-arm64-msvc'
+139 silly reify ]
+140 verbose reify failed optional dependency /Users/admin/Project/10hours/node_modules/@rollup/rollup-openharmony-arm64
+141 silly reify mark deleted [
+141 silly reify   '/Users/admin/Project/10hours/node_modules/@rollup/rollup-openharmony-arm64'
+141 silly reify ]
+142 verbose reify failed optional dependency /Users/admin/Project/10hours/node_modules/@rollup/rollup-openbsd-x64
+143 silly reify mark deleted [
+143 silly reify   '/Users/admin/Project/10hours/node_modules/@rollup/rollup-openbsd-x64'
+143 silly reify ]
+144 verbose reify failed optional dependency /Users/admin/Project/10hours/node_modules/@rollup/rollup-linux-x64-musl
+145 silly reify mark deleted [
+145 silly reify   '/Users/admin/Project/10hours/node_modules/@rollup/rollup-linux-x64-musl'
+145 silly reify ]
+146 verbose reify failed optional dependency /Users/admin/Project/10hours/node_modules/@rollup/rollup-linux-x64-gnu
+147 silly reify mark deleted [
+147 silly reify   '/Users/admin/Project/10hours/node_modules/@rollup/rollup-linux-x64-gnu'
+147 silly reify ]
+148 verbose reify failed optional dependency /Users/admin/Project/10hours/node_modules/@rollup/rollup-linux-s390x-gnu
+149 silly reify mark deleted [
+149 silly reify   '/Users/admin/Project/10hours/node_modules/@rollup/rollup-linux-s390x-gnu'
+149 silly reify ]
+150 verbose reify failed optional dependency /Users/admin/Project/10hours/node_modules/@rollup/rollup-linux-riscv64-gnu
+151 silly reify mark deleted [
+151 silly reify   '/Users/admin/Project/10hours/node_modules/@rollup/rollup-linux-riscv64-gnu'
+151 silly reify ]
+152 verbose reify failed optional dependency /Users/admin/Project/10hours/node_modules/@rollup/rollup-linux-riscv64-musl
+153 silly reify mark deleted [
+153 silly reify   '/Users/admin/Project/10hours/node_modules/@rollup/rollup-linux-riscv64-musl'
+153 silly reify ]
+154 verbose reify failed optional dependency /Users/admin/Project/10hours/node_modules/@rollup/rollup-linux-ppc64-musl
+155 silly reify mark deleted [
+155 silly reify   '/Users/admin/Project/10hours/node_modules/@rollup/rollup-linux-ppc64-musl'
+155 silly reify ]
+156 verbose reify failed optional dependency /Users/admin/Project/10hours/node_modules/@rollup/rollup-linux-ppc64-gnu
+157 silly reify mark deleted [
+157 silly reify   '/Users/admin/Project/10hours/node_modules/@rollup/rollup-linux-ppc64-gnu'
+157 silly reify ]
+158 verbose reify failed optional dependency /Users/admin/Project/10hours/node_modules/@rollup/rollup-linux-loong64-musl
+159 silly reify mark deleted [
+159 silly reify   '/Users/admin/Project/10hours/node_modules/@rollup/rollup-linux-loong64-musl'
+159 silly reify ]
+160 verbose reify failed optional dependency /Users/admin/Project/10hours/node_modules/@rollup/rollup-linux-arm64-musl
+161 silly reify mark deleted [
+161 silly reify   '/Users/admin/Project/10hours/node_modules/@rollup/rollup-linux-arm64-musl'
+161 silly reify ]
+162 verbose reify failed optional dependency /Users/admin/Project/10hours/node_modules/@rollup/rollup-linux-loong64-gnu
+163 silly reify mark deleted [
+163 silly reify   '/Users/admin/Project/10hours/node_modules/@rollup/rollup-linux-loong64-gnu'
+163 silly reify ]
+164 verbose reify failed optional dependency /Users/admin/Project/10hours/node_modules/@rollup/rollup-linux-arm64-gnu
+165 silly reify mark deleted [
+165 silly reify   '/Users/admin/Project/10hours/node_modules/@rollup/rollup-linux-arm64-gnu'
+165 silly reify ]
+166 verbose reify failed optional dependency /Users/admin/Project/10hours/node_modules/@rollup/rollup-linux-arm-musleabihf
+167 silly reify mark deleted [
+167 silly reify   '/Users/admin/Project/10hours/node_modules/@rollup/rollup-linux-arm-musleabihf'
+167 silly reify ]
+168 verbose reify failed optional dependency /Users/admin/Project/10hours/node_modules/@rollup/rollup-linux-arm-gnueabihf
+169 silly reify mark deleted [
+169 silly reify   '/Users/admin/Project/10hours/node_modules/@rollup/rollup-linux-arm-gnueabihf'
+169 silly reify ]
+170 verbose reify failed optional dependency /Users/admin/Project/10hours/node_modules/@rollup/rollup-freebsd-x64
+171 silly reify mark deleted [
+171 silly reify   '/Users/admin/Project/10hours/node_modules/@rollup/rollup-freebsd-x64'
+171 silly reify ]
+172 verbose reify failed optional dependency /Users/admin/Project/10hours/node_modules/@rollup/rollup-freebsd-arm64
+173 silly reify mark deleted [
+173 silly reify   '/Users/admin/Project/10hours/node_modules/@rollup/rollup-freebsd-arm64'
+173 silly reify ]
+174 verbose reify failed optional dependency /Users/admin/Project/10hours/node_modules/@rollup/rollup-darwin-x64
+175 silly reify mark deleted [
+175 silly reify   '/Users/admin/Project/10hours/node_modules/@rollup/rollup-darwin-x64'
+175 silly reify ]
+176 verbose reify failed optional dependency /Users/admin/Project/10hours/node_modules/@rollup/rollup-android-arm64
+177 silly reify mark deleted [
+177 silly reify   '/Users/admin/Project/10hours/node_modules/@rollup/rollup-android-arm64'
+177 silly reify ]
+178 verbose reify failed optional dependency /Users/admin/Project/10hours/node_modules/@rollup/rollup-android-arm-eabi
+179 silly reify mark deleted [
+179 silly reify   '/Users/admin/Project/10hours/node_modules/@rollup/rollup-android-arm-eabi'
+179 silly reify ]
+180 verbose reify failed optional dependency /Users/admin/Project/10hours/node_modules/@esbuild/win32-x64
+181 silly reify mark deleted [ '/Users/admin/Project/10hours/node_modules/@esbuild/win32-x64' ]
+182 verbose reify failed optional dependency /Users/admin/Project/10hours/node_modules/@esbuild/win32-ia32
+183 silly reify mark deleted [ '/Users/admin/Project/10hours/node_modules/@esbuild/win32-ia32' ]
+184 verbose reify failed optional dependency /Users/admin/Project/10hours/node_modules/@esbuild/win32-arm64
+185 silly reify mark deleted [ '/Users/admin/Project/10hours/node_modules/@esbuild/win32-arm64' ]
+186 verbose reify failed optional dependency /Users/admin/Project/10hours/node_modules/@esbuild/openbsd-x64
+187 silly reify mark deleted [ '/Users/admin/Project/10hours/node_modules/@esbuild/openbsd-x64' ]
+188 verbose reify failed optional dependency /Users/admin/Project/10hours/node_modules/@esbuild/sunos-x64
+189 silly reify mark deleted [ '/Users/admin/Project/10hours/node_modules/@esbuild/sunos-x64' ]
+190 verbose reify failed optional dependency /Users/admin/Project/10hours/node_modules/@esbuild/netbsd-x64
+191 silly reify mark deleted [ '/Users/admin/Project/10hours/node_modules/@esbuild/netbsd-x64' ]
+192 verbose reify failed optional dependency /Users/admin/Project/10hours/node_modules/@esbuild/linux-x64
+193 silly reify mark deleted [ '/Users/admin/Project/10hours/node_modules/@esbuild/linux-x64' ]
+194 verbose reify failed optional dependency /Users/admin/Project/10hours/node_modules/@esbuild/linux-s390x
+195 silly reify mark deleted [ '/Users/admin/Project/10hours/node_modules/@esbuild/linux-s390x' ]
+196 verbose reify failed optional dependency /Users/admin/Project/10hours/node_modules/@esbuild/linux-mips64el
+197 silly reify mark deleted [ '/Users/admin/Project/10hours/node_modules/@esbuild/linux-mips64el' ]
+198 verbose reify failed optional dependency /Users/admin/Project/10hours/node_modules/@esbuild/linux-loong64
+199 silly reify mark deleted [ '/Users/admin/Project/10hours/node_modules/@esbuild/linux-loong64' ]
+200 verbose reify failed optional dependency /Users/admin/Project/10hours/node_modules/@esbuild/linux-riscv64
+201 silly reify mark deleted [ '/Users/admin/Project/10hours/node_modules/@esbuild/linux-riscv64' ]
+202 verbose reify failed optional dependency /Users/admin/Project/10hours/node_modules/@esbuild/linux-ppc64
+203 silly reify mark deleted [ '/Users/admin/Project/10hours/node_modules/@esbuild/linux-ppc64' ]
+204 verbose reify failed optional dependency /Users/admin/Project/10hours/node_modules/@esbuild/linux-arm64
+205 silly reify mark deleted [ '/Users/admin/Project/10hours/node_modules/@esbuild/linux-arm64' ]
+206 verbose reify failed optional dependency /Users/admin/Project/10hours/node_modules/@esbuild/linux-ia32
+207 silly reify mark deleted [ '/Users/admin/Project/10hours/node_modules/@esbuild/linux-ia32' ]
+208 verbose reify failed optional dependency /Users/admin/Project/10hours/node_modules/@esbuild/linux-arm
+209 silly reify mark deleted [ '/Users/admin/Project/10hours/node_modules/@esbuild/linux-arm' ]
+210 verbose reify failed optional dependency /Users/admin/Project/10hours/node_modules/@esbuild/freebsd-x64
+211 silly reify mark deleted [ '/Users/admin/Project/10hours/node_modules/@esbuild/freebsd-x64' ]
+212 verbose reify failed optional dependency /Users/admin/Project/10hours/node_modules/@esbuild/freebsd-arm64
+213 silly reify mark deleted [ '/Users/admin/Project/10hours/node_modules/@esbuild/freebsd-arm64' ]
+214 verbose reify failed optional dependency /Users/admin/Project/10hours/node_modules/@esbuild/darwin-x64
+215 silly reify mark deleted [ '/Users/admin/Project/10hours/node_modules/@esbuild/darwin-x64' ]
+216 verbose reify failed optional dependency /Users/admin/Project/10hours/node_modules/@esbuild/android-x64
+217 silly reify mark deleted [ '/Users/admin/Project/10hours/node_modules/@esbuild/android-x64' ]
+218 verbose reify failed optional dependency /Users/admin/Project/10hours/node_modules/@esbuild/android-arm64
+219 silly reify mark deleted [ '/Users/admin/Project/10hours/node_modules/@esbuild/android-arm64' ]
+220 verbose reify failed optional dependency /Users/admin/Project/10hours/node_modules/@esbuild/android-arm
+221 silly reify mark deleted [ '/Users/admin/Project/10hours/node_modules/@esbuild/android-arm' ]
+222 verbose reify failed optional dependency /Users/admin/Project/10hours/node_modules/@esbuild/aix-ppc64
+223 silly reify mark deleted [ '/Users/admin/Project/10hours/node_modules/@esbuild/aix-ppc64' ]
+224 http cache @babel/parser@https://registry.npmjs.org/@babel/parser/-/parser-7.29.0.tgz 1ms (cache hit)
+225 http cache typescript@https://registry.npmjs.org/typescript/-/typescript-5.9.3.tgz 0ms (cache hit)
+226 http cache nanoid@https://registry.npmjs.org/nanoid/-/nanoid-3.3.11.tgz 0ms (cache hit)
+227 http cache update-browserslist-db@https://registry.npmjs.org/update-browserslist-db/-/update-browserslist-db-1.2.3.tgz 0ms (cache hit)
+228 http cache semver@https://registry.npmjs.org/semver/-/semver-6.3.1.tgz 0ms (cache hit)
+229 http cache rollup@https://registry.npmjs.org/rollup/-/rollup-4.57.1.tgz 0ms (cache hit)
+230 http cache jsesc@https://registry.npmjs.org/jsesc/-/jsesc-3.1.0.tgz 0ms (cache hit)
+231 http cache json5@https://registry.npmjs.org/json5/-/json5-2.2.3.tgz 0ms (cache hit)
+232 http cache browserslist@https://registry.npmjs.org/browserslist/-/browserslist-4.28.1.tgz 0ms (cache hit)
+233 http cache @vitejs/plugin-react@https://registry.npmjs.org/@vitejs/plugin-react/-/plugin-react-4.7.0.tgz 0ms (cache hit)
+234 http cache @types/react@https://registry.npmjs.org/@types/react/-/react-18.3.27.tgz 0ms (cache hit)
+235 http cache @types/prop-types@https://registry.npmjs.org/@types/prop-types/-/prop-types-15.7.15.tgz 0ms (cache hit)
+236 http cache @types/node@https://registry.npmjs.org/@types/node/-/node-20.19.31.tgz 0ms (cache hit)
+237 http cache @types/babel__traverse@https://registry.npmjs.org/@types/babel__traverse/-/babel__traverse-7.28.0.tgz 0ms (cache hit)
+238 http cache @types/babel__template@https://registry.npmjs.org/@types/babel__template/-/babel__template-7.4.4.tgz 0ms (cache hit)
+239 http cache @types/react-dom@https://registry.npmjs.org/@types/react-dom/-/react-dom-18.3.7.tgz 0ms (cache hit)
+240 http cache @tauri-apps/plugin-shell@https://registry.npmjs.org/@tauri-apps/plugin-shell/-/plugin-shell-2.3.4.tgz 0ms (cache hit)
+241 http cache @types/babel__core@https://registry.npmjs.org/@types/babel__core/-/babel__core-7.20.5.tgz 0ms (cache hit)
+242 http cache @tauri-apps/api@https://registry.npmjs.org/@tauri-apps/api/-/api-2.10.1.tgz 0ms (cache hit)
+243 http cache @tauri-apps/plugin-dialog@https://registry.npmjs.org/@tauri-apps/plugin-dialog/-/plugin-dialog-2.6.0.tgz 0ms (cache hit)
+244 http cache @babel/plugin-transform-react-jsx-source@https://registry.npmjs.org/@babel/plugin-transform-react-jsx-source/-/plugin-transform-react-jsx-source-7.27.1.tgz 0ms (cache hit)
+245 http cache @tauri-apps/cli-darwin-arm64@https://registry.npmjs.org/@tauri-apps/cli-darwin-arm64/-/cli-darwin-arm64-2.10.0.tgz 0ms (cache hit)
+246 http cache @types/babel__generator@https://registry.npmjs.org/@types/babel__generator/-/babel__generator-7.27.0.tgz 0ms (cache hit)
+247 http cache @babel/generator@https://registry.npmjs.org/@babel/generator/-/generator-7.29.0.tgz 0ms (cache hit)
+248 http cache @babel/plugin-transform-react-jsx-self@https://registry.npmjs.org/@babel/plugin-transform-react-jsx-self/-/plugin-transform-react-jsx-self-7.27.1.tgz 0ms (cache hit)
+249 http cache @rolldown/pluginutils@https://registry.npmjs.org/@rolldown/pluginutils/-/pluginutils-1.0.0-beta.27.tgz 0ms (cache hit)
+250 http cache @esbuild/darwin-arm64@https://registry.npmjs.org/@esbuild/darwin-arm64/-/darwin-arm64-0.21.5.tgz 0ms (cache hit)
+251 http cache zustand@https://registry.npmjs.org/zustand/-/zustand-4.5.7.tgz 0ms (cache hit)
+252 http cache @tauri-apps/cli@https://registry.npmjs.org/@tauri-apps/cli/-/cli-2.10.0.tgz 0ms (cache hit)
+253 http cache wavesurfer.js@https://registry.npmjs.org/wavesurfer.js/-/wavesurfer.js-7.12.1.tgz 0ms (cache hit)
+254 http cache undici-types@https://registry.npmjs.org/undici-types/-/undici-types-6.21.0.tgz 0ms (cache hit)
+255 http cache vite@https://registry.npmjs.org/vite/-/vite-5.4.21.tgz 0ms (cache hit)
+256 http cache react-dom@https://registry.npmjs.org/react-dom/-/react-dom-18.3.1.tgz 0ms (cache hit)
+257 http cache scheduler@https://registry.npmjs.org/scheduler/-/scheduler-0.23.2.tgz 0ms (cache hit)
+258 http cache react@https://registry.npmjs.org/react/-/react-18.3.1.tgz 0ms (cache hit)
+259 http cache loose-envify@https://registry.npmjs.org/loose-envify/-/loose-envify-1.4.0.tgz 0ms (cache hit)
+260 http cache react-refresh@https://registry.npmjs.org/react-refresh/-/react-refresh-0.17.0.tgz 0ms (cache hit)
+261 silly tarball no local data for @babel/parser@https://registry.npmjs.org/@babel/parser/-/parser-7.29.0.tgz. Extracting by manifest.
+262 silly tarball no local data for typescript@https://registry.npmjs.org/typescript/-/typescript-5.9.3.tgz. Extracting by manifest.
+263 http cache esbuild@https://registry.npmjs.org/esbuild/-/esbuild-0.21.5.tgz 0ms (cache hit)
+264 http cache caniuse-lite@https://registry.npmjs.org/caniuse-lite/-/caniuse-lite-1.0.30001767.tgz 0ms (cache hit)
+265 http cache baseline-browser-mapping@https://registry.npmjs.org/baseline-browser-mapping/-/baseline-browser-mapping-2.9.19.tgz 0ms (cache hit)
+266 silly tarball no local data for nanoid@https://registry.npmjs.org/nanoid/-/nanoid-3.3.11.tgz. Extracting by manifest.
+267 silly tarball no local data for update-browserslist-db@https://registry.npmjs.org/update-browserslist-db/-/update-browserslist-db-1.2.3.tgz. Extracting by manifest.
+268 silly tarball no local data for semver@https://registry.npmjs.org/semver/-/semver-6.3.1.tgz. Extracting by manifest.
+269 silly tarball no local data for rollup@https://registry.npmjs.org/rollup/-/rollup-4.57.1.tgz. Extracting by manifest.
+270 silly tarball no local data for jsesc@https://registry.npmjs.org/jsesc/-/jsesc-3.1.0.tgz. Extracting by manifest.
+271 silly tarball no local data for json5@https://registry.npmjs.org/json5/-/json5-2.2.3.tgz. Extracting by manifest.
+272 silly tarball no local data for browserslist@https://registry.npmjs.org/browserslist/-/browserslist-4.28.1.tgz. Extracting by manifest.
+273 silly tarball no local data for @vitejs/plugin-react@https://registry.npmjs.org/@vitejs/plugin-react/-/plugin-react-4.7.0.tgz. Extracting by manifest.
+274 silly tarball no local data for @types/react@https://registry.npmjs.org/@types/react/-/react-18.3.27.tgz. Extracting by manifest.
+275 silly tarball no local data for @types/prop-types@https://registry.npmjs.org/@types/prop-types/-/prop-types-15.7.15.tgz. Extracting by manifest.
+276 silly tarball no local data for @types/node@https://registry.npmjs.org/@types/node/-/node-20.19.31.tgz. Extracting by manifest.
+277 silly tarball no local data for @types/babel__traverse@https://registry.npmjs.org/@types/babel__traverse/-/babel__traverse-7.28.0.tgz. Extracting by manifest.
+278 silly tarball no local data for @types/babel__template@https://registry.npmjs.org/@types/babel__template/-/babel__template-7.4.4.tgz. Extracting by manifest.
+279 silly tarball no local data for @types/react-dom@https://registry.npmjs.org/@types/react-dom/-/react-dom-18.3.7.tgz. Extracting by manifest.
+280 silly tarball no local data for @tauri-apps/plugin-shell@https://registry.npmjs.org/@tauri-apps/plugin-shell/-/plugin-shell-2.3.4.tgz. Extracting by manifest.
+281 silly tarball no local data for @types/babel__core@https://registry.npmjs.org/@types/babel__core/-/babel__core-7.20.5.tgz. Extracting by manifest.
+282 silly tarball no local data for @tauri-apps/api@https://registry.npmjs.org/@tauri-apps/api/-/api-2.10.1.tgz. Extracting by manifest.
+283 silly tarball no local data for @tauri-apps/plugin-dialog@https://registry.npmjs.org/@tauri-apps/plugin-dialog/-/plugin-dialog-2.6.0.tgz. Extracting by manifest.
+284 silly tarball no local data for @babel/plugin-transform-react-jsx-source@https://registry.npmjs.org/@babel/plugin-transform-react-jsx-source/-/plugin-transform-react-jsx-source-7.27.1.tgz. Extracting by manifest.
+285 silly tarball no local data for @tauri-apps/cli-darwin-arm64@https://registry.npmjs.org/@tauri-apps/cli-darwin-arm64/-/cli-darwin-arm64-2.10.0.tgz. Extracting by manifest.
+286 silly tarball no local data for @types/babel__generator@https://registry.npmjs.org/@types/babel__generator/-/babel__generator-7.27.0.tgz. Extracting by manifest.
+287 silly tarball no local data for @babel/generator@https://registry.npmjs.org/@babel/generator/-/generator-7.29.0.tgz. Extracting by manifest.
+288 silly tarball no local data for @babel/plugin-transform-react-jsx-self@https://registry.npmjs.org/@babel/plugin-transform-react-jsx-self/-/plugin-transform-react-jsx-self-7.27.1.tgz. Extracting by manifest.
+289 silly tarball no local data for @rolldown/pluginutils@https://registry.npmjs.org/@rolldown/pluginutils/-/pluginutils-1.0.0-beta.27.tgz. Extracting by manifest.
+290 silly tarball no local data for @esbuild/darwin-arm64@https://registry.npmjs.org/@esbuild/darwin-arm64/-/darwin-arm64-0.21.5.tgz. Extracting by manifest.
+291 silly tarball no local data for zustand@https://registry.npmjs.org/zustand/-/zustand-4.5.7.tgz. Extracting by manifest.
+292 silly tarball no local data for @tauri-apps/cli@https://registry.npmjs.org/@tauri-apps/cli/-/cli-2.10.0.tgz. Extracting by manifest.
+293 silly tarball no local data for wavesurfer.js@https://registry.npmjs.org/wavesurfer.js/-/wavesurfer.js-7.12.1.tgz. Extracting by manifest.
+294 silly tarball no local data for undici-types@https://registry.npmjs.org/undici-types/-/undici-types-6.21.0.tgz. Extracting by manifest.
+295 silly tarball no local data for vite@https://registry.npmjs.org/vite/-/vite-5.4.21.tgz. Extracting by manifest.
+296 silly tarball no local data for react-dom@https://registry.npmjs.org/react-dom/-/react-dom-18.3.1.tgz. Extracting by manifest.
+297 silly tarball no local data for scheduler@https://registry.npmjs.org/scheduler/-/scheduler-0.23.2.tgz. Extracting by manifest.
+298 silly tarball no local data for react@https://registry.npmjs.org/react/-/react-18.3.1.tgz. Extracting by manifest.
+299 silly tarball no local data for loose-envify@https://registry.npmjs.org/loose-envify/-/loose-envify-1.4.0.tgz. Extracting by manifest.
+300 silly tarball no local data for react-refresh@https://registry.npmjs.org/react-refresh/-/react-refresh-0.17.0.tgz. Extracting by manifest.
+301 silly tarball no local data for esbuild@https://registry.npmjs.org/esbuild/-/esbuild-0.21.5.tgz. Extracting by manifest.
+302 silly tarball no local data for caniuse-lite@https://registry.npmjs.org/caniuse-lite/-/caniuse-lite-1.0.30001767.tgz. Extracting by manifest.
+303 silly tarball no local data for baseline-browser-mapping@https://registry.npmjs.org/baseline-browser-mapping/-/baseline-browser-mapping-2.9.19.tgz. Extracting by manifest.
+304 http fetch GET https://registry.npmjs.org/@babel/parser/-/parser-7.29.0.tgz attempt 1 failed with ENOTFOUND
+305 http fetch GET https://registry.npmjs.org/typescript/-/typescript-5.9.3.tgz attempt 1 failed with ENOTFOUND
+306 http fetch GET https://registry.npmjs.org/nanoid/-/nanoid-3.3.11.tgz attempt 1 failed with ENOTFOUND
+307 http fetch GET https://registry.npmjs.org/update-browserslist-db/-/update-browserslist-db-1.2.3.tgz attempt 1 failed with ENOTFOUND
+308 http fetch GET https://registry.npmjs.org/semver/-/semver-6.3.1.tgz attempt 1 failed with ENOTFOUND
+309 http fetch GET https://registry.npmjs.org/rollup/-/rollup-4.57.1.tgz attempt 1 failed with ENOTFOUND
+310 http fetch GET https://registry.npmjs.org/jsesc/-/jsesc-3.1.0.tgz attempt 1 failed with ENOTFOUND
+311 http fetch GET https://registry.npmjs.org/json5/-/json5-2.2.3.tgz attempt 1 failed with ENOTFOUND
+312 http fetch GET https://registry.npmjs.org/browserslist/-/browserslist-4.28.1.tgz attempt 1 failed with ENOTFOUND
+313 http fetch GET https://registry.npmjs.org/@vitejs/plugin-react/-/plugin-react-4.7.0.tgz attempt 1 failed with ENOTFOUND
+314 http fetch GET https://registry.npmjs.org/@types/react/-/react-18.3.27.tgz attempt 1 failed with ENOTFOUND
+315 http fetch GET https://registry.npmjs.org/@types/prop-types/-/prop-types-15.7.15.tgz attempt 1 failed with ENOTFOUND
+316 http fetch GET https://registry.npmjs.org/@types/node/-/node-20.19.31.tgz attempt 1 failed with ENOTFOUND
+317 http fetch GET https://registry.npmjs.org/@types/babel__traverse/-/babel__traverse-7.28.0.tgz attempt 1 failed with ENOTFOUND
+318 http fetch GET https://registry.npmjs.org/@types/babel__template/-/babel__template-7.4.4.tgz attempt 1 failed with ENOTFOUND
+319 http fetch GET https://registry.npmjs.org/esbuild/-/esbuild-0.21.5.tgz attempt 1 failed with ENOTFOUND
+320 http fetch GET https://registry.npmjs.org/caniuse-lite/-/caniuse-lite-1.0.30001767.tgz attempt 1 failed with ENOTFOUND
+321 http fetch GET https://registry.npmjs.org/npm attempt 2 failed with ENOTFOUND
+322 http fetch GET https://registry.npmjs.org/@babel/parser/-/parser-7.29.0.tgz attempt 2 failed with ENOTFOUND
+323 http fetch GET https://registry.npmjs.org/typescript/-/typescript-5.9.3.tgz attempt 2 failed with ENOTFOUND
+324 http fetch GET https://registry.npmjs.org/nanoid/-/nanoid-3.3.11.tgz attempt 2 failed with ENOTFOUND
+325 http fetch GET https://registry.npmjs.org/update-browserslist-db/-/update-browserslist-db-1.2.3.tgz attempt 2 failed with ENOTFOUND
+326 http fetch GET https://registry.npmjs.org/semver/-/semver-6.3.1.tgz attempt 2 failed with ENOTFOUND
+327 http fetch GET https://registry.npmjs.org/rollup/-/rollup-4.57.1.tgz attempt 2 failed with ENOTFOUND
+328 http fetch GET https://registry.npmjs.org/jsesc/-/jsesc-3.1.0.tgz attempt 2 failed with ENOTFOUND
+329 http fetch GET https://registry.npmjs.org/json5/-/json5-2.2.3.tgz attempt 2 failed with ENOTFOUND
+330 http fetch GET https://registry.npmjs.org/browserslist/-/browserslist-4.28.1.tgz attempt 2 failed with ENOTFOUND
+331 http fetch GET https://registry.npmjs.org/@vitejs/plugin-react/-/plugin-react-4.7.0.tgz attempt 2 failed with ENOTFOUND
+332 http fetch GET https://registry.npmjs.org/@types/react/-/react-18.3.27.tgz attempt 2 failed with ENOTFOUND
+333 http fetch GET https://registry.npmjs.org/@types/prop-types/-/prop-types-15.7.15.tgz attempt 2 failed with ENOTFOUND
+334 http fetch GET https://registry.npmjs.org/@types/node/-/node-20.19.31.tgz attempt 2 failed with ENOTFOUND
+335 http fetch GET https://registry.npmjs.org/@types/babel__traverse/-/babel__traverse-7.28.0.tgz attempt 2 failed with ENOTFOUND
+336 http fetch GET https://registry.npmjs.org/@types/babel__template/-/babel__template-7.4.4.tgz attempt 2 failed with ENOTFOUND
+337 http fetch GET https://registry.npmjs.org/esbuild/-/esbuild-0.21.5.tgz attempt 2 failed with ENOTFOUND
+338 http fetch GET https://registry.npmjs.org/npm attempt 3 failed with ENOTFOUND
+339 http fetch GET https://registry.npmjs.org/@babel/parser/-/parser-7.29.0.tgz attempt 3 failed with ENOTFOUND
+340 http fetch GET https://registry.npmjs.org/typescript/-/typescript-5.9.3.tgz attempt 3 failed with ENOTFOUND
+341 http fetch GET https://registry.npmjs.org/nanoid/-/nanoid-3.3.11.tgz attempt 3 failed with ENOTFOUND
+342 http fetch GET https://registry.npmjs.org/update-browserslist-db/-/update-browserslist-db-1.2.3.tgz attempt 3 failed with ENOTFOUND
+343 http fetch GET https://registry.npmjs.org/semver/-/semver-6.3.1.tgz attempt 3 failed with ENOTFOUND
+344 http fetch GET https://registry.npmjs.org/rollup/-/rollup-4.57.1.tgz attempt 3 failed with ENOTFOUND
+345 http fetch GET https://registry.npmjs.org/jsesc/-/jsesc-3.1.0.tgz attempt 3 failed with ENOTFOUND
+346 http fetch GET https://registry.npmjs.org/json5/-/json5-2.2.3.tgz attempt 3 failed with ENOTFOUND
+347 http fetch GET https://registry.npmjs.org/browserslist/-/browserslist-4.28.1.tgz attempt 3 failed with ENOTFOUND
+348 http fetch GET https://registry.npmjs.org/@vitejs/plugin-react/-/plugin-react-4.7.0.tgz attempt 3 failed with ENOTFOUND
+349 http fetch GET https://registry.npmjs.org/@types/react/-/react-18.3.27.tgz attempt 3 failed with ENOTFOUND
+350 http fetch GET https://registry.npmjs.org/@types/prop-types/-/prop-types-15.7.15.tgz attempt 3 failed with ENOTFOUND
+351 http fetch GET https://registry.npmjs.org/@types/node/-/node-20.19.31.tgz attempt 3 failed with ENOTFOUND
+352 http fetch GET https://registry.npmjs.org/@types/babel__traverse/-/babel__traverse-7.28.0.tgz attempt 3 failed with ENOTFOUND
+353 http fetch GET https://registry.npmjs.org/@types/babel__template/-/babel__template-7.4.4.tgz attempt 3 failed with ENOTFOUND
+354 http fetch GET https://registry.npmjs.org/esbuild/-/esbuild-0.21.5.tgz attempt 3 failed with ENOTFOUND
+355 verbose cwd /Users/admin/Project/10hours
+356 verbose os Darwin 25.3.0
+357 verbose node v23.6.0
+358 verbose npm  v10.9.2
+359 error Exit handler never called!
+360 error This is an error with npm itself. Please report this error at:
+361 error   <https://github.com/npm/cli/issues>
+362 verbose exit 1
+363 verbose code 1
+364 error A complete log of this run can be found in: /Users/admin/Project/10hours/.npm-cache/_logs/2026-02-28T10_15_07_792Z-debug-0.log

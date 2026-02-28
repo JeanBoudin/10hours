@@ -20,6 +20,8 @@ interface AppState {
   loopStart: number;
   loopEnd: number;
   crossfadeMs: number;
+  autoCrossfade: boolean;
+  zeroCrossingSnap: boolean;
   volume: number;
   outputDir?: string;
   status: ExportStatus;
@@ -34,6 +36,8 @@ interface AppState {
   setAudioDuration: (duration: number) => void;
   setVolume: (volume: number) => void;
   setCrossfade: (ms: number) => void;
+  toggleAutoCrossfade: (enabled: boolean) => void;
+  toggleZeroCrossingSnap: (enabled: boolean) => void;
   setOutputDir: (path: string) => void;
   setStatus: (status: ExportStatus, message?: string, exportedPath?: string) => void;
   toggleMp3: (enabled: boolean) => void;
@@ -47,6 +51,8 @@ export const useAppStore = create<AppState>((set, get) => ({
   loopStart: 0,
   loopEnd: 0,
   crossfadeMs: 150,
+  autoCrossfade: true,
+  zeroCrossingSnap: true,
   volume: 0.8,
   status: 'idle',
   enableMp3: false,
@@ -61,18 +67,36 @@ export const useAppStore = create<AppState>((set, get) => ({
   setVisualFile: (file) => set({ visualFile: file }),
   setLoopBounds: (start, end) => {
     const { audioFile } = get();
-    const duration = audioFile?.duration ?? end;
-    const safeStart = clamp(start, 0, duration);
-    const safeEnd = clamp(end, safeStart + 0.01, duration || safeStart + 0.01);
+    const fallbackStart = get().loopStart;
+    const fallbackEnd = get().loopEnd;
+    const startValue = Number.isFinite(start) ? start : fallbackStart;
+    const endValue = Number.isFinite(end) ? end : fallbackEnd;
+    if (!Number.isFinite(startValue) || !Number.isFinite(endValue)) return;
+
+    const rawDuration = audioFile?.duration;
+    const duration = Number.isFinite(rawDuration)
+      ? Math.max(0, Number(rawDuration))
+      : Math.max(endValue, startValue, 0.01);
+
+    const safeStart = clamp(startValue, 0, duration);
+    const safeEnd = clamp(endValue, safeStart + 0.01, duration || safeStart + 0.01);
+    if (!Number.isFinite(safeStart) || !Number.isFinite(safeEnd)) return;
+
     set({ loopStart: Number(safeStart.toFixed(3)), loopEnd: Number(safeEnd.toFixed(3)) });
   },
   setAudioDuration: (duration) =>
-    set((state) => ({
-      audioFile: state.audioFile ? { ...state.audioFile, duration } : undefined,
-      loopEnd: duration || state.loopEnd
-    })),
+    set((state) => {
+      if (!Number.isFinite(duration) || duration <= 0) return state;
+      const safeDuration = Number(duration);
+      return {
+        audioFile: state.audioFile ? { ...state.audioFile, duration: safeDuration } : undefined,
+        loopEnd: safeDuration || state.loopEnd
+      };
+    }),
   setVolume: (volume) => set({ volume }),
-  setCrossfade: (ms) => set({ crossfadeMs: ms }),
+  setCrossfade: (ms) => set({ crossfadeMs: Math.max(5, Number.isFinite(ms) ? Math.round(ms) : 5) }),
+  toggleAutoCrossfade: (enabled) => set({ autoCrossfade: enabled }),
+  toggleZeroCrossingSnap: (enabled) => set({ zeroCrossingSnap: enabled }),
   setOutputDir: (path) => set({ outputDir: path }),
   setStatus: (status, message, exportedPath) =>
     set({ status, statusMessage: message, lastExportPath: exportedPath ?? get().lastExportPath }),

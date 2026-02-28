@@ -4,6 +4,61 @@ import RegionsPlugin from 'wavesurfer.js/dist/plugins/regions.esm.js';
 import { convertFileSrc } from '@tauri-apps/api/core';
 import { useAppStore } from '../state/useAppStore';
 
+const ZERO_CROSSING_SEARCH_MS = 12;
+const MIN_LOOP_SECONDS = 0.01;
+const MIN_CROSSFADE_MS = 5;
+const MAX_CROSSFADE_MS = 1000;
+
+const clamp = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max);
+
+const findNearestZeroCrossing = (channel: Float32Array, sampleRate: number, targetSec: number) => {
+  if (!channel.length || sampleRate <= 0) return targetSec;
+
+  const centerIndex = clamp(Math.round(targetSec * sampleRate), 1, Math.max(1, channel.length - 2));
+  const radius = Math.max(1, Math.round((ZERO_CROSSING_SEARCH_MS / 1000) * sampleRate));
+  const rangeStart = Math.max(1, centerIndex - radius);
+  const rangeEnd = Math.min(channel.length - 1, centerIndex + radius);
+
+  let bestIndex = -1;
+  let bestDistance = Number.POSITIVE_INFINITY;
+  for (let i = rangeStart; i <= rangeEnd; i += 1) {
+    const prev = channel[i - 1];
+    const curr = channel[i];
+    const hasCrossing = (prev <= 0 && curr >= 0) || (prev >= 0 && curr <= 0);
+    if (!hasCrossing) continue;
+    const distance = Math.abs(i - centerIndex);
+    if (distance < bestDistance) {
+      bestDistance = distance;
+      bestIndex = i;
+      if (distance === 0) break;
+    }
+  }
+
+  if (bestIndex < 0) {
+    let lowestAmplitude = Number.POSITIVE_INFINITY;
+    for (let i = rangeStart; i <= rangeEnd; i += 1) {
+      const amplitude = Math.abs(channel[i]);
+      if (amplitude < lowestAmplitude) {
+        lowestAmplitude = amplitude;
+        bestIndex = i;
+      }
+    }
+  }
+
+  return (bestIndex >= 0 ? bestIndex : centerIndex) / sampleRate;
+};
+
+const getRecommendedCrossfadeMs = (segmentSeconds: number) => {
+  if (!Number.isFinite(segmentSeconds) || segmentSeconds <= 0) return MIN_CROSSFADE_MS;
+  const maxAllowed = Math.floor((segmentSeconds / 2 - MIN_LOOP_SECONDS) * 1000);
+  const safeMax = Math.max(1, Math.min(MAX_CROSSFADE_MS, maxAllowed));
+  const target = Math.round(segmentSeconds * 1000 * 0.08);
+  const safeMin = Math.min(MIN_CROSSFADE_MS, safeMax);
+  return clamp(target, safeMin, safeMax);
+};
+
+type SnapMode = 'none' | 'start' | 'end' | 'both';
+
 const WaveformEditor = () => {
   const {
     audioFile,
@@ -11,6 +66,11 @@ const WaveformEditor = () => {
     loopEnd,
     setLoopBounds,
     setAudioDuration,
+    crossfadeMs,
+    autoCrossfade,
+    setCrossfade,
+    zeroCrossingSnap,
+    toggleZeroCrossingSnap,
     volume,
     setVolume,
     setStatus
@@ -20,6 +80,11 @@ const WaveformEditor = () => {
     loopEnd: state.loopEnd,
     setLoopBounds: state.setLoopBounds,
     setAudioDuration: state.setAudioDuration,
+    crossfadeMs: state.crossfadeMs,
+    autoCrossfade: state.autoCrossfade,
+    setCrossfade: state.setCrossfade,
+    zeroCrossingSnap: state.zeroCrossingSnap,
+    toggleZeroCrossingSnap: state.toggleZeroCrossingSnap,
     volume: state.volume,
     setVolume: state.setVolume,
     setStatus: state.setStatus
@@ -28,9 +93,45 @@ const WaveformEditor = () => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const waveSurferRef = useRef<WaveSurfer | null>(null);
   const regionRef = useRef<any>(null);
+  const decodedAudioRef = useRef<AudioBuffer | null>(null);
 
   const hasAudio = Boolean(audioFile);
-  const loopDuration = useMemo(() => Math.max(loopEnd - loopStart, 0).toFixed(2), [loopStart, loopEnd]);
+  const loopDuration = useMemo(() => {
+    const safeStart = Number.isFinite(loopStart) ? loopStart : 0;
+    const safeEnd = Number.isFinite(loopEnd) ? loopEnd : safeStart;
+    return Math.max(safeEnd - safeStart, 0).toFixed(2);
+  }, [loopStart, loopEnd]);
+
+  const applySnappedLoopBounds = useCallback(
+    (start: number, end: number, mode: SnapMode = 'both') => {
+      if (!Number.isFinite(start) || !Number.isFinite(end)) {
+        const state = useAppStore.getState();
+        return { start: state.loopStart, end: state.loopEnd };
+      }
+
+      let snappedStart = start;
+      let snappedEnd = end;
+      const decoded = decodedAudioRef.current;
+      if (zeroCrossingSnap && decoded && decoded.numberOfChannels > 0 && decoded.length > 2 && mode !== 'none') {
+        const channel = decoded.getChannelData(0);
+        if (mode === 'start' || mode === 'both') {
+          snappedStart = findNearestZeroCrossing(channel, decoded.sampleRate, start);
+        }
+        if (mode === 'end' || mode === 'both') {
+          snappedEnd = findNearestZeroCrossing(channel, decoded.sampleRate, end);
+        }
+      }
+
+      if (snappedEnd - snappedStart < MIN_LOOP_SECONDS) {
+        setLoopBounds(start, end);
+      } else {
+        setLoopBounds(snappedStart, snappedEnd);
+      }
+      const state = useAppStore.getState();
+      return { start: state.loopStart, end: state.loopEnd };
+    },
+    [setLoopBounds, zeroCrossingSnap]
+  );
 
   useEffect(() => {
     if (!containerRef.current || !audioFile) {
@@ -51,7 +152,9 @@ const WaveformEditor = () => {
     const regions = waveSurfer.registerPlugin(RegionsPlugin.create());
 
     waveSurfer.on('ready', () => {
+      decodedAudioRef.current = waveSurfer.getDecodedData() ?? null;
       const duration = waveSurfer.getDuration();
+      if (!Number.isFinite(duration) || duration <= 0) return;
       setAudioDuration(duration);
       setLoopBounds(0, duration);
       if (!regionRef.current) {
@@ -64,9 +167,34 @@ const WaveformEditor = () => {
           loop: true,
           color: 'rgba(14,165,233,0.15)'
         });
-        regionRef.current.on('update-end', (region: { start: number; end: number }) =>
-          setLoopBounds(region.start, region.end)
-        );
+        regionRef.current.on('update-end', (side?: 'start' | 'end') => {
+          const currentRegion = regionRef.current;
+          if (!currentRegion) return;
+          const regionStart = Number(currentRegion.start);
+          const regionEnd = Number(currentRegion.end);
+          if (!Number.isFinite(regionStart) || !Number.isFinite(regionEnd)) return;
+
+          const state = useAppStore.getState();
+          const prevDuration = state.loopEnd - state.loopStart;
+          const nextDuration = regionEnd - regionStart;
+          const deltaStart = regionStart - state.loopStart;
+          const deltaEnd = regionEnd - state.loopEnd;
+          const movedAsBlock = Math.abs(deltaStart - deltaEnd) < 0.015 && Math.abs(nextDuration - prevDuration) < 0.015;
+
+          let mode: SnapMode = 'both';
+          if (side === 'start') {
+            mode = 'start';
+          } else if (side === 'end') {
+            mode = 'end';
+          } else if (movedAsBlock) {
+            mode = 'none';
+          } else if (Math.abs(deltaStart) > Math.abs(deltaEnd)) {
+            mode = 'start';
+          } else if (Math.abs(deltaEnd) > Math.abs(deltaStart)) {
+            mode = 'end';
+          }
+          applySnappedLoopBounds(regionStart, regionEnd, mode);
+        });
       }
     });
 
@@ -78,8 +206,9 @@ const WaveformEditor = () => {
       waveSurfer.destroy();
       waveSurferRef.current = null;
       regionRef.current = null;
+      decodedAudioRef.current = null;
     };
-  }, [audioFile?.path, setAudioDuration, setLoopBounds, volume]);
+  }, [audioFile?.path, applySnappedLoopBounds, setAudioDuration, setLoopBounds, volume]);
 
   useEffect(() => {
     if (regionRef.current) {
@@ -91,10 +220,23 @@ const WaveformEditor = () => {
     }
   }, [loopStart, loopEnd]);
 
+  useEffect(() => {
+    if (!autoCrossfade) return;
+    const segment = loopEnd - loopStart;
+    if (segment <= 0) return;
+    const recommended = getRecommendedCrossfadeMs(segment);
+    if (recommended !== crossfadeMs) {
+      setCrossfade(recommended);
+    }
+  }, [autoCrossfade, crossfadeMs, loopEnd, loopStart, setCrossfade]);
+
   const playLoop = useCallback(() => {
     const waveSurfer = waveSurferRef.current;
     if (!waveSurfer) return;
-    waveSurfer.play(loopStart, loopEnd);
+    const safeStart = Number.isFinite(loopStart) ? loopStart : 0;
+    const safeEnd = Number.isFinite(loopEnd) ? loopEnd : safeStart;
+    if (safeEnd <= safeStart) return;
+    waveSurfer.play(safeStart, safeEnd);
   }, [loopStart, loopEnd]);
 
   const pause = () => waveSurferRef.current?.pause();
@@ -108,21 +250,24 @@ const WaveformEditor = () => {
 
   const handleLoopInput = (event: ChangeEvent<HTMLInputElement>, target: 'start' | 'end') => {
     const numeric = Number(event.target.value);
-    if (Number.isNaN(numeric)) return;
+    if (!Number.isFinite(numeric)) return;
+    const safeStart = Number.isFinite(loopStart) ? loopStart : 0;
+    const safeEnd = Number.isFinite(loopEnd) ? loopEnd : safeStart + MIN_LOOP_SECONDS;
     if (target === 'start') {
-      setLoopBounds(numeric, loopEnd);
+      applySnappedLoopBounds(numeric, safeEnd, 'start');
     } else {
-      setLoopBounds(loopStart, numeric);
+      applySnappedLoopBounds(safeStart, numeric, 'end');
     }
   };
 
   const handleAutoLoop = useCallback(() => {
     const waveSurfer = waveSurferRef.current;
-    const decoded = waveSurfer?.getDecodedData();
+    const decoded = waveSurfer?.getDecodedData() ?? decodedAudioRef.current;
     if (!decoded) {
       setStatus('error', 'Audio pas encore prêt pour l’analyse.');
       return;
     }
+    decodedAudioRef.current = decoded;
 
     const channel = decoded.getChannelData(0);
     const sampleRate = decoded.sampleRate;
@@ -140,7 +285,7 @@ const WaveformEditor = () => {
 
     const maxRms = Math.max(...rms);
     if (!Number.isFinite(maxRms) || maxRms <= 0) {
-      setLoopBounds(0, decoded.duration);
+      applySnappedLoopBounds(0, decoded.duration, 'both');
       setStatus('idle', 'Auto loop: silence détecté, boucle complète appliquée.');
       return;
     }
@@ -169,7 +314,7 @@ const WaveformEditor = () => {
     }
 
     if (segments.length === 0) {
-      setLoopBounds(0, decoded.duration);
+      applySnappedLoopBounds(0, decoded.duration, 'both');
       setStatus('idle', 'Auto loop: aucune zone détectée, boucle complète appliquée.');
       return;
     }
@@ -187,9 +332,9 @@ const WaveformEditor = () => {
       endSec = decoded.duration;
     }
 
-    setLoopBounds(startSec, endSec);
-    setStatus('idle', `Auto loop: ${startSec.toFixed(2)}s → ${endSec.toFixed(2)}s`);
-  }, [setLoopBounds, setStatus]);
+    const snapped = applySnappedLoopBounds(startSec, endSec, 'both');
+    setStatus('idle', `Auto loop: ${snapped.start.toFixed(2)}s → ${snapped.end.toFixed(2)}s`);
+  }, [applySnappedLoopBounds, setStatus]);
 
   if (!hasAudio) {
     return <div className="waveform-placeholder">Sélectionnez un fichier audio pour afficher le waveform.</div>;
@@ -209,6 +354,10 @@ const WaveformEditor = () => {
           <input type="number" step="0.01" value={loopEnd} onChange={(event) => handleLoopInput(event, 'end')} />
         </label>
         <span>Durée: {loopDuration}s</span>
+        <label className="checkbox">
+          <input type="checkbox" checked={zeroCrossingSnap} onChange={(event) => toggleZeroCrossingSnap(event.target.checked)} />
+          Snap zéro-crossing
+        </label>
         <button type="button" onClick={handleAutoLoop} className="secondary">Auto loop</button>
       </div>
       <div className="transport">

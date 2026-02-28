@@ -11,7 +11,9 @@ const ExportPanel = () => {
     loopStart,
     loopEnd,
     crossfadeMs,
+    autoCrossfade,
     setCrossfade,
+    toggleAutoCrossfade,
     outputDir,
     setOutputDir,
     setStatus,
@@ -29,7 +31,9 @@ const ExportPanel = () => {
     loopStart: state.loopStart,
     loopEnd: state.loopEnd,
     crossfadeMs: state.crossfadeMs,
+    autoCrossfade: state.autoCrossfade,
     setCrossfade: state.setCrossfade,
+    toggleAutoCrossfade: state.toggleAutoCrossfade,
     outputDir: state.outputDir,
     setOutputDir: state.setOutputDir,
     setStatus: state.setStatus,
@@ -156,12 +160,11 @@ const ExportPanel = () => {
       setStatus('error', 'Choisissez un dossier de sortie.');
       return;
     }
+    const segment = currentLoopEnd - currentLoopStart;
     setProgress(0);
-    setRemainingSeconds(durationSeconds);
-
+    setRemainingSeconds(segment);
     setStatus('exporting', `Export ${format.toUpperCase()} en cours...`);
 
-    const segment = currentLoopEnd - currentLoopStart;
     const crossfadeSeconds = Math.min(segment / 2 - 0.01, currentCrossfadeMs / 1000);
     if (crossfadeSeconds <= 0) {
       setStatus('error', 'Le crossfade doit être plus court que la boucle.');
@@ -319,8 +322,20 @@ const ExportPanel = () => {
     <div className="export-panel">
       <h2>3. Export</h2>
       <label>
-        Crossfade (ms)
-        <input type="number" min={50} max={1000} step={10} value={crossfadeMs} onChange={(event) => setCrossfade(Number(event.target.value))} />
+        Crossfade (ms){autoCrossfade ? ' auto' : ''}
+        <input
+          type="number"
+          min={5}
+          max={1000}
+          step={5}
+          value={crossfadeMs}
+          disabled={autoCrossfade}
+          onChange={(event) => setCrossfade(Number(event.target.value))}
+        />
+      </label>
+      <label className="checkbox">
+        <input type="checkbox" checked={autoCrossfade} onChange={(event) => toggleAutoCrossfade(event.target.checked)} />
+        Ajustement automatique du crossfade
       </label>
       <div className="picker-row">
         <button type="button" onClick={chooseDirectory} className="secondary">Choisir dossier de sortie</button>
