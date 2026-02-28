@@ -26,7 +26,6 @@ interface AppState {
   outputDir?: string;
   status: ExportStatus;
   statusMessage?: string;
-  enableMp3: boolean;
   lastExportPath?: string;
   exportDurationHours: number;
   exportDurationMinutes: number;
@@ -40,7 +39,6 @@ interface AppState {
   toggleZeroCrossingSnap: (enabled: boolean) => void;
   setOutputDir: (path: string) => void;
   setStatus: (status: ExportStatus, message?: string, exportedPath?: string) => void;
-  toggleMp3: (enabled: boolean) => void;
   setExportDurationHours: (hours: number) => void;
   setExportDurationMinutes: (minutes: number) => void;
 }
@@ -55,7 +53,6 @@ export const useAppStore = create<AppState>((set, get) => ({
   zeroCrossingSnap: true,
   volume: 0.8,
   status: 'idle',
-  enableMp3: false,
   exportDurationHours: 1,
   exportDurationMinutes: 0,
   setAudioFile: (file) =>
@@ -100,7 +97,6 @@ export const useAppStore = create<AppState>((set, get) => ({
   setOutputDir: (path) => set({ outputDir: path }),
   setStatus: (status, message, exportedPath) =>
     set({ status, statusMessage: message, lastExportPath: exportedPath ?? get().lastExportPath }),
-  toggleMp3: (enabled) => set({ enableMp3: enabled }),
   setExportDurationHours: (hours) => set({ exportDurationHours: hours }),
   setExportDurationMinutes: (minutes) => set({ exportDurationMinutes: minutes })
 }));

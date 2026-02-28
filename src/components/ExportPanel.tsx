@@ -19,8 +19,6 @@ const ExportPanel = () => {
     setStatus,
     status,
     statusMessage,
-    enableMp3,
-    toggleMp3,
     exportDurationHours,
     exportDurationMinutes,
     setExportDurationHours,
@@ -39,8 +37,6 @@ const ExportPanel = () => {
     setStatus: state.setStatus,
     status: state.status,
     statusMessage: state.statusMessage,
-    enableMp3: state.enableMp3,
-    toggleMp3: state.toggleMp3,
     exportDurationHours: state.exportDurationHours,
     exportDurationMinutes: state.exportDurationMinutes,
     setExportDurationHours: state.setExportDurationHours,
@@ -99,15 +95,11 @@ const ExportPanel = () => {
     }
   };
 
-  const runFfmpegWithProgress = async (args: string[], durationSeconds: number) => {
-    if (!outputDir) {
-      setStatus('error', 'Choisissez un dossier de sortie.');
-      return { code: 1, stdout: '', stderr: 'No output directory' };
-    }
+  const runFfmpegWithProgress = async (args: string[], durationSeconds: number, directory: string) => {
     setProgress(0);
     setRemainingSeconds(durationSeconds);
     let buffer = '';
-    const command = Command.sidecar('ffmpeg', args, { cwd: outputDir });
+    const command = Command.sidecar('ffmpeg', args, { cwd: directory });
     command.stdout.on('data', (chunk) => {
       buffer += chunk;
       const lines = buffer.split(/\r?\n/);
@@ -124,15 +116,15 @@ const ExportPanel = () => {
         command.on('error', reject);
       });
       if (result.code === 0) setProgress(1);
-      return { code: result.code ?? 1, stdout: '', stderr: '' };
+      return { code: result.code ?? 1, stderr: '' };
     } catch (error) {
       appendLog(String(error));
-      return { code: 1, stdout: '', stderr: String(error) };
+      return { code: 1, stderr: String(error) };
     }
   };
 
-  const validateLoopWith = (audio: typeof audioFile, start: number, end: number) => {
-    if (!audio) {
+  const validateLoopWith = (audioPath: string | undefined, start: number, end: number) => {
+    if (!audioPath) {
       setStatus('error', 'Sélectionnez un audio.');
       return false;
     }
@@ -142,79 +134,6 @@ const ExportPanel = () => {
       return false;
     }
     return true;
-  };
-
-  const runExport = async (format: 'wav' | 'mp3') => {
-    const state = useAppStore.getState();
-    const currentAudio = audioFile ?? state.audioFile;
-    const currentLoopStart = state.loopStart ?? loopStart;
-    const currentLoopEnd = state.loopEnd ?? loopEnd;
-    const currentCrossfadeMs = state.crossfadeMs ?? crossfadeMs;
-    const currentOutputDir = state.outputDir ?? outputDir;
-    if (!currentAudio) {
-      setStatus('error', 'Sélectionnez un audio.');
-      return;
-    }
-    if (!validateLoopWith(currentAudio, currentLoopStart, currentLoopEnd)) return;
-    if (!currentOutputDir) {
-      setStatus('error', 'Choisissez un dossier de sortie.');
-      return;
-    }
-    const segment = currentLoopEnd - currentLoopStart;
-    setProgress(0);
-    setRemainingSeconds(segment);
-    setStatus('exporting', `Export ${format.toUpperCase()} en cours...`);
-
-    const crossfadeSeconds = Math.min(segment / 2 - 0.01, currentCrossfadeMs / 1000);
-    if (crossfadeSeconds <= 0) {
-      setStatus('error', 'Le crossfade doit être plus court que la boucle.');
-      return;
-    }
-
-    const filter = `[0:a]atrim=start=${currentLoopStart}:end=${currentLoopEnd},asetpts=PTS-STARTPTS,asplit=2[a0][a1];` +
-      `[a0]afade=t=out:st=${(segment - crossfadeSeconds).toFixed(3)}:d=${crossfadeSeconds.toFixed(3)}[a0f];` +
-      `[a1]atrim=start=${(segment - crossfadeSeconds).toFixed(3)},asetpts=PTS-STARTPTS,afade=t=in:st=0:d=${crossfadeSeconds.toFixed(3)}[a1f];` +
-      `[a0f][a1f]acrossfade=d=${crossfadeSeconds.toFixed(3)}:c1=tri:c2=tri[aout]`;
-
-    const baseName = currentAudio.name.replace(/\.[^/.]+$/, '');
-    const targetName = `${baseName}_loop.${format}`;
-    const targetPath = await join(currentOutputDir, targetName);
-
-    const args = [
-      '-y',
-      '-hide_banner',
-      '-loglevel',
-      'error',
-      '-progress',
-      'pipe:1',
-      '-nostats',
-      '-i',
-      currentAudio.path,
-      '-filter_complex',
-      filter,
-      '-map',
-      '[aout]'
-    ];
-    if (format === 'wav') {
-      args.push('-c:a', 'pcm_s24le');
-    } else {
-      args.push('-c:a', 'libmp3lame', '-b:a', '320k');
-    }
-    args.push(targetPath);
-
-    try {
-      appendLog(`ffmpeg ${args.join(' ')}`);
-      const { code, stderr } = await runFfmpegWithProgress(args, segment);
-      if (code === 0) {
-        setStatus('success', `${format.toUpperCase()} exporté: ${targetName}`, targetPath);
-      } else {
-        if (stderr) appendLog(stderr);
-        setStatus('error', `FFmpeg a retourné le code ${code}`);
-      }
-    } catch (error) {
-      appendLog(String(error));
-      setStatus('error', 'Export impossible. Vérifiez FFmpeg.');
-    }
   };
 
   const runExportMp4 = async () => {
@@ -229,7 +148,7 @@ const ExportPanel = () => {
       setStatus('error', 'Audio et visuel nécessaires pour exporter en MP4.');
       return;
     }
-    if (!validateLoopWith(currentAudio, currentLoopStart, currentLoopEnd)) return;
+    if (!validateLoopWith(currentAudio.path, currentLoopStart, currentLoopEnd)) return;
     if (!currentOutputDir) {
       setStatus('error', 'Choisissez un dossier de sortie.');
       return;
@@ -305,7 +224,7 @@ const ExportPanel = () => {
     try {
       setStatus('exporting', `Export MP4 (${durationTag}) en cours...`);
       appendLog(`ffmpeg ${args.join(' ')}`);
-      const { code, stderr } = await runFfmpegWithProgress(args, durationSeconds);
+      const { code, stderr } = await runFfmpegWithProgress(args, durationSeconds, currentOutputDir);
       if (code === 0) {
         setStatus('success', `MP4 exporté: ${videoName}`, targetPath);
       } else {
@@ -320,7 +239,7 @@ const ExportPanel = () => {
 
   return (
     <div className="export-panel">
-      <h2>3. Export</h2>
+      <h2>3. Export vidéo</h2>
       <label>
         Crossfade (ms){autoCrossfade ? ' auto' : ''}
         <input
@@ -373,17 +292,13 @@ const ExportPanel = () => {
           />
         </label>
       </div>
-      <div className="export-buttons">
-        <button type="button" onClick={() => runExport('wav')} disabled={status === 'exporting'} className="primary">Exporter WAV</button>
-        <label className="checkbox">
-          <input type="checkbox" checked={enableMp3} onChange={(event) => toggleMp3(event.target.checked)} /> Export MP3 aussi
-        </label>
-        <button type="button" onClick={() => runExport('mp3')} disabled={!enableMp3 || status === 'exporting'}>Exporter MP3</button>
-      </div>
       {visualFile && (
         <button type="button" className="primary" disabled={status === 'exporting'} onClick={runExportMp4}>
           Exporter MP4 ({durationTag})
         </button>
+      )}
+      {!visualFile && (
+        <p className="hint">Ajoutez un visuel pour activer l’export MP4.</p>
       )}
       <div className={`status-banner ${status}`}>
         {statusMessage ?? 'Prêt'}
