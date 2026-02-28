@@ -43,7 +43,6 @@ const ExportPanel = () => {
     setExportDurationMinutes: state.setExportDurationMinutes
   }));
 
-  const [logs, setLogs] = useState<string[]>([]);
   const [progress, setProgress] = useState<number | null>(null);
   const [remainingSeconds, setRemainingSeconds] = useState<number | null>(null);
   const totalMinutes = exportDurationHours * 60 + exportDurationMinutes;
@@ -59,7 +58,7 @@ const ExportPanel = () => {
       const directory = await open({ directory: true, multiple: false });
       if (typeof directory === 'string') {
         setOutputDir(directory);
-        setStatus('idle', `Dossier sélectionné: ${directory}`);
+        setStatus('idle', 'Dossier de sortie sélectionné.');
       }
     } catch (error) {
       console.error('Directory dialog error', error);
@@ -67,7 +66,6 @@ const ExportPanel = () => {
     }
   };
 
-  const appendLog = (line: string) => setLogs((prev) => [line, ...prev].slice(0, 50));
   const formatDuration = (seconds: number) => {
     const total = Math.max(0, Math.floor(seconds));
     const hours = Math.floor(total / 3600);
@@ -99,6 +97,7 @@ const ExportPanel = () => {
     setProgress(0);
     setRemainingSeconds(durationSeconds);
     let buffer = '';
+    let stderrBuffer = '';
     const command = Command.sidecar('ffmpeg', args, { cwd: directory });
     command.stdout.on('data', (chunk) => {
       buffer += chunk;
@@ -107,7 +106,7 @@ const ExportPanel = () => {
       lines.forEach((line) => updateProgressFromLine(line, durationSeconds));
     });
     command.stderr.on('data', (line) => {
-      if (line) appendLog(line);
+      if (line) stderrBuffer = `${stderrBuffer}\n${line}`.trim();
     });
     try {
       await command.spawn();
@@ -116,10 +115,9 @@ const ExportPanel = () => {
         command.on('error', reject);
       });
       if (result.code === 0) setProgress(1);
-      return { code: result.code ?? 1, stderr: '' };
+      return { code: result.code ?? 1, stderr: stderrBuffer };
     } catch (error) {
-      appendLog(String(error));
-      return { code: 1, stderr: String(error) };
+      return { code: 1, stderr: `${stderrBuffer}\n${String(error)}`.trim() };
     }
   };
 
@@ -223,16 +221,15 @@ const ExportPanel = () => {
 
     try {
       setStatus('exporting', `Export MP4 (${durationTag}) en cours...`);
-      appendLog(`ffmpeg ${args.join(' ')}`);
       const { code, stderr } = await runFfmpegWithProgress(args, durationSeconds, currentOutputDir);
       if (code === 0) {
         setStatus('success', `MP4 exporté: ${videoName}`, targetPath);
       } else {
-        if (stderr) appendLog(stderr);
+        if (stderr) console.error('FFmpeg MP4 error:', stderr);
         setStatus('error', `FFmpeg MP4 a échoué (code ${code}).`);
       }
     } catch (error) {
-      appendLog(String(error));
+      console.error('Export MP4 error:', error);
       setStatus('error', 'Export MP4 impossible. Vérifiez FFmpeg.');
     }
   };
@@ -316,10 +313,6 @@ const ExportPanel = () => {
           </div>
         </div>
       )}
-      <details>
-        <summary>Logs FFmpeg</summary>
-        <pre className="logs">{logs.join('\n')}</pre>
-      </details>
     </div>
   );
 };
