@@ -1,0 +1,43 @@
+name: Build macOS Artifact
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-macos:
+    runs-on: macos-13
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: x86_64-apple-darwin
+
+      - name: Install frontend dependencies
+        run: npm ci
+
+      - name: Ensure FFmpeg sidecars are executable
+        run: |
+          chmod +x src-tauri/ffmpeg*
+          chmod +x src-tauri/bin/macos-universal/ffmpeg*
+
+      - name: Build unsigned DMG
+        run: npm run tauri build -- --target x86_64-apple-darwin
+
+      - name: Upload DMG artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: loop-visualizer-macos-unsigned-dmg
+          path: src-tauri/target/x86_64-apple-darwin/release/bundle/dmg/*.dmg
+          if-no-files-found: error
+          retention-days: 14
