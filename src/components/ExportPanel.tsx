@@ -290,12 +290,12 @@ const ExportPanel = () => {
         </label>
       </div>
       {visualFile && (
-        <button type="button" className="primary" disabled={status === ‘exporting’} onClick={runExportMp4}>
+        <button type="button" className="primary" disabled={status === 'exporting'} onClick={runExportMp4}>
           Exporter WebM ({durationTag})
         </button>
       )}
       {!visualFile && (
-        <p className="hint">Ajoutez un visuel pour activer l’export WebM.</p>
+        <p className="hint">Ajoutez un visuel pour activer l'export WebM.</p>
       )}
       <div className={`status-banner ${status}`}>
         {statusMessage ?? 'Prêt'}
