@@ -151,6 +151,10 @@ const WaveformEditor = () => {
 
     const regions = waveSurfer.registerPlugin(RegionsPlugin.create());
 
+    waveSurfer.on('error', (err) => {
+      setStatus('error', `Impossible de charger l'audio: ${String(err)}`);
+    });
+
     waveSurfer.on('ready', () => {
       decodedAudioRef.current = waveSurfer.getDecodedData() ?? null;
       const duration = waveSurfer.getDuration();
