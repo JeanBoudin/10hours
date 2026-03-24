@@ -143,7 +143,7 @@ const ExportPanel = () => {
     const currentCrossfadeMs = state.crossfadeMs ?? crossfadeMs;
     const currentOutputDir = state.outputDir ?? outputDir;
     if (!currentAudio || !currentVisual) {
-      setStatus('error', 'Audio et visuel nécessaires pour exporter en MP4.');
+      setStatus('error', 'Audio et visuel nécessaires pour exporter en WebM.');
       return;
     }
     if (!validateLoopWith(currentAudio.path, currentLoopStart, currentLoopEnd)) return;
@@ -175,7 +175,7 @@ const ExportPanel = () => {
       `[aLoopBase]aresample=${sampleRate},aloop=loop=-1:size=${loopSamples}[aout]`;
 
     const baseName = currentAudio.name.replace(/\.[^/.]+$/, '');
-    const videoName = `${baseName}_loop_${durationTag}.mp4`;
+    const videoName = `${baseName}_loop_${durationTag}.webm`;
     const targetPath = await join(currentOutputDir, videoName);
 
     const visualArgs =
@@ -205,32 +205,32 @@ const ExportPanel = () => {
       '-t',
       durationSeconds.toString(),
       '-c:v',
-      'libx264',
-      '-preset',
-      'veryfast',
+      'libvpx-vp9',
       '-crf',
-      '20',
+      '33',
+      '-b:v',
+      '0',
       '-pix_fmt',
-      'yuv420p',
+      'yuva420p',
       '-c:a',
-      'aac',
+      'libopus',
       '-b:a',
       '320k',
       targetPath
     ];
 
     try {
-      setStatus('exporting', `Export MP4 (${durationTag}) en cours...`);
+      setStatus('exporting', `Export WebM (${durationTag}) en cours...`);
       const { code, stderr } = await runFfmpegWithProgress(args, durationSeconds, currentOutputDir);
       if (code === 0) {
-        setStatus('success', `MP4 exporté: ${videoName}`, targetPath);
+        setStatus('success', `WebM exporté: ${videoName}`, targetPath);
       } else {
-        if (stderr) console.error('FFmpeg MP4 error:', stderr);
-        setStatus('error', `FFmpeg MP4 a échoué (code ${code}).`);
+        if (stderr) console.error('FFmpeg WebM error:', stderr);
+        setStatus('error', `FFmpeg WebM a échoué (code ${code}).`);
       }
     } catch (error) {
-      console.error('Export MP4 error:', error);
-      setStatus('error', 'Export MP4 impossible. Vérifiez FFmpeg.');
+      console.error('Export WebM error:', error);
+      setStatus('error', 'Export WebM impossible. Vérifiez FFmpeg.');
     }
   };
 
@@ -290,12 +290,12 @@ const ExportPanel = () => {
         </label>
       </div>
       {visualFile && (
-        <button type="button" className="primary" disabled={status === 'exporting'} onClick={runExportMp4}>
-          Exporter MP4 ({durationTag})
+        <button type="button" className="primary" disabled={status === ‘exporting’} onClick={runExportMp4}>
+          Exporter WebM ({durationTag})
         </button>
       )}
       {!visualFile && (
-        <p className="hint">Ajoutez un visuel pour activer l’export MP4.</p>
+        <p className="hint">Ajoutez un visuel pour activer l’export WebM.</p>
       )}
       <div className={`status-banner ${status}`}>
         {statusMessage ?? 'Prêt'}
