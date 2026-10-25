@@ -4,6 +4,11 @@ import { Command } from '@tauri-apps/plugin-shell';
 import { join } from '@tauri-apps/api/path';
 import { useAppStore } from '../state/useAppStore';
 
+const SAMPLE_RATE = 44100;
+const VIDEO_WIDTH = 1920;
+const VIDEO_HEIGHT = 1080;
+const VIDEO_FPS = 30;
+
 const ExportPanel = () => {
   const {
     audioFile,
@@ -165,14 +170,20 @@ const ExportPanel = () => {
       return;
     }
 
-    const sampleRate = 44100;
-    const loopSamples = Math.max(1, Math.round(segment * sampleRate));
+    // Boucle sans couture: le corps [start+X, end] finit en fondu sortant pendant que la tête [start, start+X]
+    // entre en fondu, si bien que la fin de la boucle enchaîne exactement sur son début. Tout est en échantillons.
+    const startSample = Math.round(currentLoopStart * SAMPLE_RATE);
+    const endSample = Math.round(currentLoopEnd * SAMPLE_RATE);
+    const fadeSamples = Math.max(1, Math.round(crossfadeSeconds * SAMPLE_RATE));
+    const loopSamples = endSample - startSample - fadeSamples;
     const audioFilter =
-      `[0:a]atrim=start=${currentLoopStart}:end=${currentLoopEnd},asetpts=PTS-STARTPTS,asplit=2[a0][a1];` +
-      `[a0]afade=t=out:st=${(segment - crossfadeSeconds).toFixed(3)}:d=${crossfadeSeconds.toFixed(3)}[a0f];` +
-      `[a1]atrim=start=${(segment - crossfadeSeconds).toFixed(3)},asetpts=PTS-STARTPTS,afade=t=in:st=0:d=${crossfadeSeconds.toFixed(3)}[a1f];` +
-      `[a0f][a1f]acrossfade=d=${crossfadeSeconds.toFixed(3)}:c1=tri:c2=tri[aLoopBase];` +
-      `[aLoopBase]aresample=${sampleRate},aloop=loop=-1:size=${loopSamples}[aout]`;
+      `[0:a]aresample=${SAMPLE_RATE},atrim=start_sample=${startSample}:end_sample=${endSample},asetpts=PTS-STARTPTS,asplit=2[a0][a1];` +
+      `[a0]atrim=start_sample=${fadeSamples},asetpts=PTS-STARTPTS,` +
+      `afade=t=out:start_sample=${loopSamples - fadeSamples}:nb_samples=${fadeSamples}[aBody];` +
+      `[a1]atrim=end_sample=${fadeSamples},asetpts=PTS-STARTPTS,afade=t=in:start_sample=0:nb_samples=${fadeSamples},` +
+      `adelay=delays=${loopSamples - fadeSamples}S:all=1[aHead];` +
+      `[aBody][aHead]amix=inputs=2:duration=longest:normalize=0[aLoopBase];` +
+      `[aLoopBase]aloop=loop=-1:size=${loopSamples}[aout]`;
 
     const baseName = currentAudio.name.replace(/\.[^/.]+$/, '');
     const videoName = `${baseName}_loop_${durationTag}.mp4`;
@@ -180,12 +191,14 @@ const ExportPanel = () => {
 
     const visualArgs =
       currentVisual.kind === 'image'
-        ? ['-loop', '1', '-framerate', '30', '-i', currentVisual.path]
+        ? ['-loop', '1', '-framerate', String(VIDEO_FPS), '-i', currentVisual.path]
         : ['-stream_loop', '-1', '-i', currentVisual.path];
 
+    // Le fond noir fixe la taille de sortie: le visuel y est centré sans déformation (bandes noires si besoin).
     const videoFilter =
-      `[1:v]format=rgba,scale=trunc(iw/2)*2:trunc(ih/2)*2[fg];` +
-      `color=c=black[bg];[bg][fg]overlay=shortest=1[vout]`;
+      `[1:v]scale=${VIDEO_WIDTH}:${VIDEO_HEIGHT}:force_original_aspect_ratio=decrease,format=rgba[fg];` +
+      `color=c=black:s=${VIDEO_WIDTH}x${VIDEO_HEIGHT}:r=${VIDEO_FPS}[bg];` +
+      `[bg][fg]overlay=x=(W-w)/2:y=(H-h)/2:shortest=1,format=yuv420p[vout]`;
 
     const args = [
       '-y',

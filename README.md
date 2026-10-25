@@ -1,14 +1,13 @@
 # Loop Visualizer (Tauri v2 + React + TypeScript)
 
-Application macOS permettant de boucler proprement un segment audio tout en affichant un visuel (image/vidéo) et en exportant le résultat en WAV (MP3 optionnel) via un binaire FFmpeg embarqué (sidecar). Entièrement hors-ligne.
+Application macOS permettant de boucler proprement un segment audio tout en affichant un visuel (image/vidéo) et en exportant le résultat en vidéo MP4 via un binaire FFmpeg embarqué (sidecar). Entièrement hors-ligne.
 
 ## Fonctionnalités livrées
 - Sélection de fichiers via `@tauri-apps/plugin-dialog` (audio + visuel + dossier de sortie).
 - Prévisualisation du visuel (image responsive ou vidéo silencieuse en boucle) en plein panneau.
 - Waveform interactif (wavesurfer.js + plugin Regions) avec définition de `loopStart` / `loopEnd`, lecture en boucle, transport Play/Pause/Stop et contrôle de volume WebAudio.
-- Export FFmpeg sidecar (`@tauri-apps/plugin-shell`) vers WAV obligatoire + MP3 optionnel, avec crossfade automatique pour supprimer les clics.
-- Export MP4: durée configurable (en minutes), fixe ou vidéo bouclée en arrière-plan, audio loopé lissé automatiquement.
-- Gestion d’état centralisée (Zustand) et logs FFmpeg accessibles depuis l’UI.
+- Export MP4 1080p via le FFmpeg sidecar (`@tauri-apps/plugin-shell`): durée configurable (heures + minutes), image fixe ou vidéo bouclée en arrière-plan, audio bouclé avec crossfade pour supprimer le clic au raccord.
+- Gestion d’état centralisée (Zustand), progression et temps restant de l’export affichés dans l’UI.
 
 ## Arborescence
 ```
@@ -84,47 +83,33 @@ Cela produit un `.app` / `.dmg` dans `src-tauri/target/release/bundle` (FFmpeg e
 
 Vous pouvez shipper plusieurs variantes (Intel/ARM) en dupliquant les sous-dossiers `bin` et en ajustant `path`/`externalBin` si besoin.
 
-## Commande FFmpeg audio
-Pour un segment `[loopStart, loopEnd]` et un crossfade `X` (en secondes), la commande construite est:
-```
-ffmpeg -y \
-  -i <audio_source> \
-  -filter_complex "[0:a]atrim=start=loopStart:end=loopEnd,asetpts=PTS-STARTPTS,asplit=2[a0][a1];
-                  [a0]afade=t=out:st=segment-X:d=X[a0f];
-                  [a1]atrim=start=segment-X,asetpts=PTS-STARTPTS,afade=t=in:st=0:d=X[a1f];
-                  [a0f][a1f]acrossfade=d=X:c1=tri:c2=tri[aout]" \
-  -map [aout] \
-  -c:a pcm_s24le \
-  <sortie.wav>
-```
-- `segment = loopEnd - loopStart`.
-- L’export MP3 remplace la ligne codec par `-c:a libmp3lame -b:a 320k`.
-- Les chemins sont passés tels quels à FFmpeg; Tauri gère les espaces.
-
-Ce pipeline extrait le segment, applique un fondu de sortie sur les dernières `X` secondes, un fondu d’entrée sur les premières `X` secondes, puis fusionne les deux via `acrossfade` pour obtenir une boucle parfaitement lissée.
-
 ## Commande FFmpeg MP4
-Pour produire une vidéo d’une durée donnée (`durée = minutes × 60`), le bouton “Exporter MP4” construit:
+Pour un segment `[loopStart, loopEnd]` et un crossfade `X`, tout est converti en échantillons à 44,1 kHz
+(`L = loopStart`, `E = loopEnd`, `N = E - L - X` = longueur de la boucle):
 ```
 ffmpeg -y \
   -i <audio_source> \
   [-loop 1 -framerate 30 | -stream_loop -1] -i <visual_source> \
   -filter_complex "
-    [0:a]atrim=start=loopStart:end=loopEnd,asetpts=PTS-STARTPTS,asplit=2[a0][a1];
-    [a0]afade=t=out:st=segment-X:d=X[a0f];
-    [a1]atrim=start=segment-X,asetpts=PTS-STARTPTS,afade=t=in:st=0:d=X[a1f];
-    [a0f][a1f]acrossfade=d=X:c1=tri:c2=tri[aLoop];
-    [aLoop]aloop=loop=-1:size=0[aout]
+    [0:a]aresample=44100,atrim=start_sample=L:end_sample=E,asetpts=PTS-STARTPTS,asplit=2[a0][a1];
+    [a0]atrim=start_sample=X,asetpts=PTS-STARTPTS,afade=t=out:start_sample=N-X:nb_samples=X[aBody];
+    [a1]atrim=end_sample=X,asetpts=PTS-STARTPTS,afade=t=in:start_sample=0:nb_samples=X,adelay=delays=(N-X)S:all=1[aHead];
+    [aBody][aHead]amix=inputs=2:duration=longest:normalize=0[aLoopBase];
+    [aLoopBase]aloop=loop=-1:size=N[aout];
+    [1:v]scale=1920:1080:force_original_aspect_ratio=decrease,format=rgba[fg];
+    color=c=black:s=1920x1080:r=30[bg];
+    [bg][fg]overlay=x=(W-w)/2:y=(H-h)/2:shortest=1,format=yuv420p[vout]
   " \
-  -map 1:v:0 -map [aout] \
+  -map [vout] -map [aout] \
   -t <durée_en_secondes> \
   -c:v libx264 -preset veryfast -crf 20 -pix_fmt yuv420p \
   -c:a aac -b:a 320k \
-  -shortest \
   <sortie.mp4>
 ```
-- Si le visuel est une image: `-loop 1 -framerate 30 -i image`.
-- Si le visuel est une vidéo: `-stream_loop -1 -i video` afin de la répéter pendant toute la durée requise.
+- Audio: le corps de la boucle `[L+X, E]` se termine en fondu sortant pendant que la tête `[L, L+X]` entre en fondu.
+  La fin de la boucle enchaîne donc exactement sur son début, sans clic.
+- Vidéo: sortie 1920x1080 à 30 i/s, visuel centré sans déformation sur fond noir (transparence comprise).
+- Si le visuel est une image: `-loop 1 -framerate 30 -i image`; si c'est une vidéo ou un GIF: `-stream_loop -1 -i video`.
 
 ## Sécurité & validation
 - Les extensions autorisées sont validées côté front (audio: mp3/wav/m4a/ogg/flac ; visuel: png/jpg/webp/mp4/mov/webm).

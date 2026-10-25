@@ -94,6 +94,7 @@ const WaveformEditor = () => {
   const waveSurferRef = useRef<WaveSurfer | null>(null);
   const regionRef = useRef<any>(null);
   const decodedAudioRef = useRef<AudioBuffer | null>(null);
+  const loopingRef = useRef(false);
 
   const hasAudio = Boolean(audioFile);
   const loopDuration = useMemo(() => {
@@ -112,7 +113,9 @@ const WaveformEditor = () => {
       let snappedStart = start;
       let snappedEnd = end;
       const decoded = decodedAudioRef.current;
-      if (zeroCrossingSnap && decoded && decoded.numberOfChannels > 0 && decoded.length > 2 && mode !== 'none') {
+      // Lu dans le store pour garder une fonction stable: sinon le waveform est recréé à chaque bascule du snap.
+      const snapEnabled = useAppStore.getState().zeroCrossingSnap;
+      if (snapEnabled && decoded && decoded.numberOfChannels > 0 && decoded.length > 2 && mode !== 'none') {
         const channel = decoded.getChannelData(0);
         if (mode === 'start' || mode === 'both') {
           snappedStart = findNearestZeroCrossing(channel, decoded.sampleRate, start);
@@ -130,7 +133,7 @@ const WaveformEditor = () => {
       const state = useAppStore.getState();
       return { start: state.loopStart, end: state.loopEnd };
     },
-    [setLoopBounds, zeroCrossingSnap]
+    [setLoopBounds]
   );
 
   useEffect(() => {
@@ -202,17 +205,30 @@ const WaveformEditor = () => {
       }
     });
 
-    waveSurfer.setVolume(volume);
+    // Lecture en boucle de la région: on revient au début dès que la tête dépasse la fin.
+    waveSurfer.on('timeupdate', (currentTime) => {
+      if (!loopingRef.current) return;
+      const { loopStart: start, loopEnd: end } = useAppStore.getState();
+      if (end > start && currentTime >= end) waveSurfer.setTime(start);
+    });
+    waveSurfer.on('finish', () => {
+      if (!loopingRef.current) return;
+      waveSurfer.setTime(useAppStore.getState().loopStart);
+      void waveSurfer.play();
+    });
+
+    waveSurfer.setVolume(useAppStore.getState().volume);
     waveSurferRef.current = waveSurfer;
 
     return () => {
+      loopingRef.current = false;
       regions?.destroy?.();
       waveSurfer.destroy();
       waveSurferRef.current = null;
       regionRef.current = null;
       decodedAudioRef.current = null;
     };
-  }, [audioFile?.path, applySnappedLoopBounds, setAudioDuration, setLoopBounds, volume]);
+  }, [audioFile?.path, applySnappedLoopBounds, setAudioDuration, setLoopBounds]);
 
   useEffect(() => {
     if (regionRef.current) {
@@ -240,11 +256,19 @@ const WaveformEditor = () => {
     const safeStart = Number.isFinite(loopStart) ? loopStart : 0;
     const safeEnd = Number.isFinite(loopEnd) ? loopEnd : safeStart;
     if (safeEnd <= safeStart) return;
-    waveSurfer.play(safeStart, safeEnd);
+    loopingRef.current = true;
+    waveSurfer.setTime(safeStart);
+    void waveSurfer.play();
   }, [loopStart, loopEnd]);
 
-  const pause = () => waveSurferRef.current?.pause();
-  const stop = () => waveSurferRef.current?.stop();
+  const pause = () => {
+    loopingRef.current = false;
+    waveSurferRef.current?.pause();
+  };
+  const stop = () => {
+    loopingRef.current = false;
+    waveSurferRef.current?.stop();
+  };
 
   const handleVolumeChange = (event: ChangeEvent<HTMLInputElement>) => {
     const value = Number(event.target.value);
