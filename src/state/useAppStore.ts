@@ -12,11 +12,35 @@ export type VisualFile = {
   kind: 'image' | 'video' | 'gif';
 };
 
+export type OverlayFile = {
+  path: string;
+  name: string;
+};
+
+export type OverlayCorner = 'tl' | 'tr' | 'bl' | 'br';
+export type OverlayMode = 'intro' | 'custom' | 'all';
+
+export const OVERLAY_INTRO_SECONDS = 15;
+export const OVERLAY_FADE_SECONDS = 0.5;
+// Gabarit de la vidéo exportée (1920x1080): la capture garde sa taille jusqu'à 40 % de la largeur.
+export const OVERLAY_MAX_WIDTH = 768;
+export const OVERLAY_MARGIN = 48;
+
+// Durée d'affichage de la capture en secondes, ou null pour toute la vidéo.
+export const getOverlayDuration = (mode: OverlayMode, customSeconds: number) => {
+  if (mode === 'all') return null;
+  return mode === 'intro' ? OVERLAY_INTRO_SECONDS : customSeconds;
+};
+
 type ExportStatus = 'idle' | 'exporting' | 'success' | 'error';
 
 interface AppState {
   audioFile?: AudioFile;
   visualFile?: VisualFile;
+  overlayFile?: OverlayFile;
+  overlayCorner: OverlayCorner;
+  overlayMode: OverlayMode;
+  overlaySeconds: number;
   loopStart: number;
   loopEnd: number;
   crossfadeMs: number;
@@ -31,6 +55,10 @@ interface AppState {
   exportDurationMinutes: number;
   setAudioFile: (file?: AudioFile) => void;
   setVisualFile: (file?: VisualFile) => void;
+  setOverlayFile: (file?: OverlayFile) => void;
+  setOverlayCorner: (corner: OverlayCorner) => void;
+  setOverlayMode: (mode: OverlayMode) => void;
+  setOverlaySeconds: (seconds: number) => void;
   setLoopBounds: (start: number, end: number) => void;
   setAudioDuration: (duration: number) => void;
   setVolume: (volume: number) => void;
@@ -46,6 +74,9 @@ interface AppState {
 const clamp = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max);
 
 export const useAppStore = create<AppState>((set, get) => ({
+  overlayCorner: 'tr',
+  overlayMode: 'intro',
+  overlaySeconds: 30,
   loopStart: 0,
   loopEnd: 0,
   crossfadeMs: 150,
@@ -62,6 +93,11 @@ export const useAppStore = create<AppState>((set, get) => ({
       loopEnd: file?.duration ?? 0
     })),
   setVisualFile: (file) => set({ visualFile: file }),
+  setOverlayFile: (file) => set({ overlayFile: file }),
+  setOverlayCorner: (corner) => set({ overlayCorner: corner }),
+  setOverlayMode: (mode) => set({ overlayMode: mode }),
+  setOverlaySeconds: (seconds) =>
+    set({ overlaySeconds: Number.isFinite(seconds) ? clamp(Math.round(seconds), 1, 3600) : 1 }),
   setLoopBounds: (start, end) => {
     const { audioFile } = get();
     const fallbackStart = get().loopStart;

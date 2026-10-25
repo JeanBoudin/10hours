@@ -126,6 +126,133 @@ button:hover:not(:disabled) {
   justify-content: center;
 }
 
+.visual-frame {
+  position: relative;
+  height: 100%;
+  max-width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #000000;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.visual-frame .visual-media {
+  border-radius: 0;
+}
+
+.visual-overlay {
+  position: absolute;
+  height: auto;
+}
+
+.overlay-picker {
+  margin: 4px 0 20px;
+  padding: 14px;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+}
+
+.overlay-picker h3 {
+  margin: 0 0 4px;
+  font-size: 15px;
+}
+
+.overlay-picker .hint {
+  margin: 0 0 10px;
+}
+
+.overlay-picker fieldset {
+  border: none;
+  margin: 12px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.overlay-picker legend {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  padding: 0;
+}
+
+.icon-button {
+  background: transparent;
+  color: #475569;
+  font-size: 20px;
+  line-height: 1;
+  padding: 6px 10px;
+}
+
+.corner-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  max-width: 240px;
+}
+
+.corner-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 8px;
+  border-radius: 10px;
+  border: 2px solid #e2e8f0;
+  background: #ffffff;
+  color: #0f172a;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.corner-button.selected {
+  border-color: #0284c7;
+  background: #e0f2fe;
+}
+
+.corner-thumb {
+  position: relative;
+  width: 48px;
+  height: 27px;
+  border-radius: 4px;
+  background: #cbd5e1;
+}
+
+.corner-thumb::after {
+  content: '';
+  position: absolute;
+  width: 16px;
+  height: 9px;
+  border-radius: 2px;
+  background: #64748b;
+}
+
+.corner-button.selected .corner-thumb::after {
+  background: #0284c7;
+}
+
+.corner-thumb.tl::after { top: 3px; left: 3px; }
+.corner-thumb.tr::after { top: 3px; right: 3px; }
+.corner-thumb.bl::after { bottom: 3px; left: 3px; }
+.corner-thumb.br::after { bottom: 3px; right: 3px; }
+
+.overlay-seconds {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #475569;
+  padding-left: 22px;
+}
+
+.overlay-seconds input {
+  width: 80px;
+  border: 1px solid #cbd5f5;
+  border-radius: 8px;
+  padding: 6px 10px;
+}
+
 .visual-media {
   width: 100%;
   height: 100%;

@@ -13,6 +13,7 @@ permissions = [
   "dialog:allow-message",
   "dialog:allow-ask",
   "dialog:allow-confirm",
+  { identifier = "fs:allow-write-file", allow = [ { path = "$TEMP/*" } ] },
   "shell:default",
   "shell:allow-open",
   { identifier = "shell:allow-spawn", allow = [ { name = "ffmpeg", sidecar = true, args = true } ] },

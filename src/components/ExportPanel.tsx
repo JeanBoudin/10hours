@@ -2,12 +2,34 @@ import { useState } from 'react';
 import { open } from '@tauri-apps/plugin-dialog';
 import { Command } from '@tauri-apps/plugin-shell';
 import { join } from '@tauri-apps/api/path';
-import { useAppStore } from '../state/useAppStore';
+import {
+  getOverlayDuration,
+  OVERLAY_FADE_SECONDS,
+  OVERLAY_MARGIN,
+  OVERLAY_MAX_WIDTH,
+  useAppStore
+} from '../state/useAppStore';
 
 const SAMPLE_RATE = 44100;
 const VIDEO_WIDTH = 1920;
 const VIDEO_HEIGHT = 1080;
 const VIDEO_FPS = 30;
+
+// Capture du commentaire (entrée 2) posée dans un coin, avec fondus; coupée après sa durée pour ne rien coûter ensuite.
+const buildOverlayFilter = (state: ReturnType<typeof useAppStore.getState>) => {
+  const duration = getOverlayDuration(state.overlayMode, state.overlaySeconds);
+  const fade = duration === null ? OVERLAY_FADE_SECONDS : Math.min(OVERLAY_FADE_SECONDS, duration / 2);
+  const x = state.overlayCorner.endsWith('l') ? `${OVERLAY_MARGIN}` : `W-w-${OVERLAY_MARGIN}`;
+  const y = state.overlayCorner.startsWith('t') ? `${OVERLAY_MARGIN}` : `H-h-${OVERLAY_MARGIN}`;
+  const timing =
+    duration === null
+      ? `fade=t=in:st=0:d=${fade}:alpha=1`
+      : `fade=t=in:st=0:d=${fade}:alpha=1,fade=t=out:st=${duration - fade}:d=${fade}:alpha=1,trim=duration=${duration}`;
+  return (
+    `[2:v]scale='min(${OVERLAY_MAX_WIDTH},iw)':-2,format=rgba,${timing}[ov];` +
+    `[vbase][ov]overlay=x=${x}:y=${y}:eof_action=pass`
+  );
+};
 
 const ExportPanel = () => {
   const {
@@ -147,6 +169,7 @@ const ExportPanel = () => {
     const currentLoopEnd = state.loopEnd ?? loopEnd;
     const currentCrossfadeMs = state.crossfadeMs ?? crossfadeMs;
     const currentOutputDir = state.outputDir ?? outputDir;
+    const currentOverlay = state.overlayFile;
     if (!currentAudio || !currentVisual) {
       setStatus('error', 'Audio et visuel nécessaires pour exporter en MP4.');
       return;
@@ -193,12 +216,16 @@ const ExportPanel = () => {
       currentVisual.kind === 'image'
         ? ['-loop', '1', '-framerate', String(VIDEO_FPS), '-i', currentVisual.path]
         : ['-stream_loop', '-1', '-i', currentVisual.path];
+    const overlayArgs = currentOverlay
+      ? ['-loop', '1', '-framerate', String(VIDEO_FPS), '-i', currentOverlay.path]
+      : [];
 
     // Le fond noir fixe la taille de sortie: le visuel y est centré sans déformation (bandes noires si besoin).
     const videoFilter =
       `[1:v]scale=${VIDEO_WIDTH}:${VIDEO_HEIGHT}:force_original_aspect_ratio=decrease,format=rgba[fg];` +
       `color=c=black:s=${VIDEO_WIDTH}x${VIDEO_HEIGHT}:r=${VIDEO_FPS}[bg];` +
-      `[bg][fg]overlay=x=(W-w)/2:y=(H-h)/2:shortest=1,format=yuv420p[vout]`;
+      `[bg][fg]overlay=x=(W-w)/2:y=(H-h)/2:shortest=1` +
+      (currentOverlay ? `[vbase];${buildOverlayFilter(state)},format=yuv420p[vout]` : `,format=yuv420p[vout]`);
 
     const args = [
       '-y',
@@ -211,6 +238,7 @@ const ExportPanel = () => {
       '-i',
       currentAudio.path,
       ...visualArgs,
+      ...overlayArgs,
       '-filter_complex',
       `${audioFilter};${videoFilter}`,
       '-map',

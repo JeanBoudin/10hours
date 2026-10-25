@@ -7,6 +7,7 @@ Application macOS permettant de boucler proprement un segment audio tout en affi
 - Prévisualisation du visuel (image responsive ou vidéo silencieuse en boucle) en plein panneau.
 - Waveform interactif (wavesurfer.js + plugin Regions) avec définition de `loopStart` / `loopEnd`, lecture en boucle, transport Play/Pause/Stop et contrôle de volume WebAudio.
 - Export MP4 1080p via le FFmpeg sidecar (`@tauri-apps/plugin-shell`): durée configurable (heures + minutes), image fixe ou vidéo bouclée en arrière-plan, audio bouclé avec crossfade pour supprimer le clic au raccord.
+- Commentaire en superposition: capture d'écran choisie ou collée (Cmd+V), placée dans un coin à 48 px du bord (largeur max 768 px), affichée 15 s, une durée personnalisée ou toute la vidéo, avec fondus de 0,5 s.
 - Gestion d’état centralisée (Zustand), progression et temps restant de l’export affichés dans l’UI.
 
 ## Arborescence
@@ -110,6 +111,7 @@ ffmpeg -y \
   La fin de la boucle enchaîne donc exactement sur son début, sans clic.
 - Vidéo: sortie 1920x1080 à 30 i/s, visuel centré sans déformation sur fond noir (transparence comprise).
 - Si le visuel est une image: `-loop 1 -framerate 30 -i image`; si c'est une vidéo ou un GIF: `-stream_loop -1 -i video`.
+- Avec un commentaire en superposition, la capture est une 3e entrée (`-loop 1 -framerate 30 -i capture.png`) posée sur `[vbase]` par `overlay`, avec `fade` (alpha) à l'entrée et à la sortie puis `trim=duration=D` pour qu'elle disparaisse après `D` secondes.
 
 ## Sécurité & validation
 - Les extensions autorisées sont validées côté front (audio: mp3/wav/m4a/ogg/flac ; visuel: png/jpg/webp/mp4/mov/webm).

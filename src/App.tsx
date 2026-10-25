@@ -1,13 +1,16 @@
 import FilePicker from './components/FilePicker';
+import OverlayPicker from './components/OverlayPicker';
 import VisualPreview from './components/VisualPreview';
 import WaveformEditor from './components/WaveformEditor';
 import ExportPanel from './components/ExportPanel';
 import { useAppStore } from './state/useAppStore';
 
 const App = () => {
-  const { audioFile, visualFile } = useAppStore((state) => ({
+  const { audioFile, visualFile, overlayFile, overlayCorner } = useAppStore((state) => ({
     audioFile: state.audioFile,
-    visualFile: state.visualFile
+    visualFile: state.visualFile,
+    overlayFile: state.overlayFile,
+    overlayCorner: state.overlayCorner
   }));
 
   return (
@@ -24,10 +27,11 @@ const App = () => {
       <main className="main-grid">
         <section className="panel file-panel">
           <FilePicker />
+          <OverlayPicker />
           <ExportPanel />
         </section>
         <section className="panel visual-panel">
-          <VisualPreview visual={visualFile} />
+          <VisualPreview visual={visualFile} overlay={overlayFile} overlayCorner={overlayCorner} />
         </section>
         <section className="panel waveform-panel">
           <WaveformEditor />
